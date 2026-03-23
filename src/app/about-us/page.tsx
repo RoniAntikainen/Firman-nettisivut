@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
 
-export default function Home() {
+export default function AboutUsPage() {
   const heroRef = useRef<HTMLElement | null>(null);
-  const nextRef = useRef<HTMLElement | null>(null);
+  const whoItFitsRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const el = heroRef.current;
@@ -24,8 +24,6 @@ export default function Home() {
       );
 
       const eased = Math.pow(progress, 1.6);
-
-      // 75% -> 0%
       const value = Math.max(75 - eased * 75, 0);
 
       el.style.setProperty("--fade-start", `${value}%`);
@@ -38,14 +36,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const el = nextRef.current;
+    const el = whoItFitsRef.current;
     if (!el) return;
 
     const onScroll = () => {
       const rect = el.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 
-      // alkaa jo selvästi ennen kuin section tulee kunnolla näkyviin
       const startOffset = viewportHeight * 0.35;
       const triggerRange = viewportHeight * 1.15;
 
@@ -55,9 +52,8 @@ export default function Home() {
       const progress = Math.min(Math.max(rawProgress, 0), 1);
       const eased = Math.pow(progress, 1.35);
 
-      // pieni perusfade heti alusta, ettei koskaan näy täysin 0-tilassa
-      const baseFade = 24;
-      const maxFade = 80;
+      const baseFade = 32;
+      const maxFade = 100;
       const value = Math.min(baseFade + eased * (maxFade - baseFade), maxFade);
 
       el.style.setProperty("--fade-top", `${value}px`);
@@ -74,67 +70,63 @@ export default function Home() {
       <section className={`${styles.section} ${styles.noBg}`}>
         <div className={`${styles.HeroConteiner} ${styles.conteiner}`}>
           <div className={styles.content}>
-            <h2 className={styles.Title}>
-              We build apps around what you need.
-            </h2>
+            <h1 className={styles.Title}>
+              We build systems that are designed to actually work in real use.
+            </h1>
           </div>
 
           <div className={styles.heroMedia}>
-            <Image
-              src="/media/"
-              alt="Hero-kuva"
-              width={300}
-              height={300}
-              className={styles.heroImage}
-              priority
-            />
+            <div className={styles.heroPanel}>
+              <p className={styles.heroText}>
+                We focus on clarity, structure and practical solutions that
+                remove friction from everyday work.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section ref={heroRef} className={`${styles.section} ${styles.hero}`}>
+      <section
+        ref={heroRef}
+        className={`${styles.section} ${styles.hero}`}
+      >
         <div className={`${styles.conteiner} ${styles.servicesSection}`}>
           <div className={styles.servicesIntro}>
+
             <h2 className={styles.Title}>
-              Fixing what’s not working.
-              <br />
-              Building what’s missing.
+              We build tools, systems and workflows that make work feel simpler.
             </h2>
 
             <p className={styles.description}>
-              So your systems finally work the way they should.
+              Our work is focused on helping teams move away from fragmented
+              workflows, repetitive manual work and systems that slow everything
+              down.
             </p>
           </div>
 
           <div className={styles.servicesVisual}>
             <div className={styles.featureStack}>
               <article className={styles.featurePanel}>
-                <h3 className={styles.featureTitle}>
-                  Internal tools that replace manual work
-                </h3>
+                <h3 className={styles.featureTitle}>Internal tools</h3>
                 <p className={styles.featureText}>
-                  Replace spreadsheets and fragmented workflows with one
-                  structured system.
+                  Dashboards, admin tools and workflows that replace manual work
+                  with one clearer system.
                 </p>
               </article>
 
               <article className={styles.featurePanel}>
-                <h3 className={styles.featureTitle}>
-                  Website functionality that actually adds value
-                </h3>
+                <h3 className={styles.featureTitle}>Website functionality</h3>
                 <p className={styles.featureText}>
-                  Add dashboards, flows, integrations and other features
-                  directly into your site.
+                  Useful features, flows and integrations that turn a website
+                  into something more practical.
                 </p>
               </article>
 
               <article className={styles.featurePanel}>
-                <h3 className={styles.featureTitle}>
-                  Fixes for systems that are slow, messy or limiting
-                </h3>
+                <h3 className={styles.featureTitle}>System improvements</h3>
                 <p className={styles.featureText}>
-                  When the current setup is in the way, we improve it or
-                  rebuild it properly.
+                  Reworking slow, messy or limiting setups so they support real
+                  use better.
                 </p>
               </article>
             </div>
@@ -145,45 +137,43 @@ export default function Home() {
       <section className={`${styles.section} ${styles.howWeWorkSection}`}>
         <div className={`${styles.conteiner} ${styles.howWeWork}`}>
           <div className={styles.howWeWorkIntro}>
+
             <h2 className={styles.Title}>
-              A clear process.
-              <br />
-              Built around what actually matters.
+              Most systems are harder to use than they should be.
             </h2>
 
             <p className={styles.description}>
-              We keep projects focused by understanding the problem first,
-              designing only what is needed, and building solutions that work
-              properly in real use.
+              Too often, digital tools are built around assumptions instead of
+              real workflows. They become slow, unclear or overloaded with
+              features that add little value.
             </p>
           </div>
 
           <div className={styles.processGrid}>
             <article className={styles.processCard}>
               <span className={styles.processNumber}>01</span>
-              <h3 className={styles.processTitle}>Understand the problem</h3>
+              <h3 className={styles.processTitle}>Clarity over clutter</h3>
               <p className={styles.processText}>
-                We look at what is slowing things down, where work gets repeated
-                and what should be simplified before anything gets built.
+                We prefer simple structures, clear interfaces and focused flows
+                over unnecessary complexity.
               </p>
             </article>
 
             <article className={styles.processCard}>
               <span className={styles.processNumber}>02</span>
-              <h3 className={styles.processTitle}>Design the right solution</h3>
+              <h3 className={styles.processTitle}>Real use over theory</h3>
               <p className={styles.processText}>
-                We define the structure, flows and features with clarity, so the
-                solution stays useful, focused and free from unnecessary
-                complexity.
+                A system should work in everyday use, not just look good in a
+                presentation or planning document.
               </p>
             </article>
 
             <article className={styles.processCard}>
               <span className={styles.processNumber}>03</span>
-              <h3 className={styles.processTitle}>Build and improve</h3>
+              <h3 className={styles.processTitle}>Structure that scales</h3>
               <p className={styles.processText}>
-                We implement the system properly, refine the details and make
-                sure it works smoothly in practice, not just in theory.
+                Good systems are easier to maintain, improve and grow when the
+                foundation is built properly.
               </p>
             </article>
           </div>
@@ -191,9 +181,45 @@ export default function Home() {
       </section>
 
       <section
-        ref={nextRef}
-        className={`${styles.section} ${styles.fadeDownTop} ${styles.ctaSection}`}
+        ref={whoItFitsRef}
+        className={`${styles.section} ${styles.fadeDownTop} ${styles.hero}`}
       >
+        <div className={`${styles.conteiner} ${styles.servicesSection}`}>
+          <div className={styles.servicesIntro}>
+
+            <h2 className={styles.Title}>
+              We work best with teams that want better structure.
+            </h2>
+
+            <p className={styles.description}>
+              The best fit is usually a team that has outgrown scattered tools
+              and wants a system that feels more natural to use.
+            </p>
+          </div>
+
+          <div className={styles.servicesVisual}>
+            <div className={styles.featureStack}>
+              <article className={styles.featurePanel}>
+                <h3 className={styles.featureTitle}>Too many manual steps</h3>
+                <p className={styles.featureText}>
+                  Repetitive work, copied data and unnecessary admin slow down
+                  everyday progress.
+                </p>
+              </article>
+
+              <article className={styles.featurePanel}>
+                <h3 className={styles.featureTitle}>Outgrown spreadsheets</h3>
+                <p className={styles.featureText}>
+                  What worked earlier no longer supports the way the team
+                  actually operates now.
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.section} ${styles.ctaSection} ${styles.noBg}`}>
         <div className={`${styles.conteiner} ${styles.cta}`}>
           <div className={styles.ctaContent}>
             <h2 className={styles.Title}>
@@ -201,15 +227,15 @@ export default function Home() {
             </h2>
 
             <p className={styles.description}>
-              Let’s take a look at what’s slowing things down and what should be built
-              instead.
+              Let&apos;s take a look at what&apos;s slowing things down and what
+              should be built instead.
             </p>
           </div>
 
           <div className={styles.ctaActions}>
-            <a href="/contact" className={styles.ctaButton}>
+            <Link href="/contact" className={styles.ctaButton}>
               Let&apos;s talk
-            </a>
+            </Link>
           </div>
         </div>
       </section>
