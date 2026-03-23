@@ -10,8 +10,7 @@
 }
 
 .section {
-  min-height: 80vh;
-  background: var(--color-surface-primary);
+
   display: flex;
 }
 
@@ -131,11 +130,6 @@
   max-width: 38ch;
 }
 
-.howWeWorkSection {
-  padding-top: 96px;
-  padding-bottom: 96px;
-  min-height: auto;
-}
 
 .howWeWork {
   display: flex;

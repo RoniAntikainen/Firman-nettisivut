@@ -1,0 +1,5 @@
+section {
+    padding: var(--space-10);   
+    min-height: 80vh;
+    background: var(--color-surface-primary);
+}

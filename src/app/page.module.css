@@ -11,8 +11,6 @@
 }
 
 .section {
-  height: 80vh;
-  background: var(--color-surface-primary);
   display: flex;
 
 }
