@@ -81,10 +81,10 @@ export default function Home() {
 
           <div className={styles.heroMedia}>
             <Image
-              src="/media/"
+              src="/media/HeroImg.png"
               alt="Hero-kuva"
-              width={300}
-              height={300}
+              width={500}
+              height={333}
               className={styles.heroImage}
               priority
             />
