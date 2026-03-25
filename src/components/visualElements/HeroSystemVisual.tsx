@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./HeroSystemVisual.module.css";
 
 type Phase =
@@ -27,6 +27,27 @@ type ProcessItem = {
   eyebrow: string;
   body: string;
   chips: [string, string];
+};
+
+type CardKey = "request" | "editor" | "preview";
+
+type CardSize = {
+  width: number;
+  height: number;
+};
+
+type CardPosition = {
+  top: number;
+  left: number;
+};
+
+type Layout = Record<CardKey, CardPosition>;
+
+type Rect = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
 };
 
 const PROCESS_ITEMS: ProcessItem[] = [
@@ -182,14 +203,213 @@ const PROCESS_ITEMS: ProcessItem[] = [
   },
 ];
 
+const CARD_SIZES: Record<CardKey, CardSize> = {
+  request: { width: 312, height: 190 },
+  editor: { width: 352, height: 248 },
+  preview: { width: 392, height: 312 },
+};
+
+const DEFAULT_LAYOUT: Layout = {
+  request: { top: 20, left: 20 },
+  editor: { top: 120, left: 280 },
+  preview: { top: 110, left: 520 },
+};
+
+const SCENE_PADDING = 20;
+const CARD_GAP = 18;
+const MAX_LAYOUT_ATTEMPTS = 120;
+const LAYOUT_CANDIDATE_COUNT = 40;
+
+function randomBetween(min: number, max: number) {
+  if (max <= min) return min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createRect(position: CardPosition, size: CardSize): Rect {
+  return {
+    left: position.left,
+    top: position.top,
+    right: position.left + size.width,
+    bottom: position.top + size.height,
+  };
+}
+
+function rectsOverlap(a: Rect, b: Rect, gap: number) {
+  return !(
+    a.right + gap <= b.left ||
+    b.right + gap <= a.left ||
+    a.bottom + gap <= b.top ||
+    b.bottom + gap <= a.top
+  );
+}
+
+function getRandomPosition(
+  containerWidth: number,
+  containerHeight: number,
+  size: CardSize
+): CardPosition {
+  const maxLeft = Math.max(
+    SCENE_PADDING,
+    containerWidth - size.width - SCENE_PADDING
+  );
+  const maxTop = Math.max(
+    SCENE_PADDING,
+    containerHeight - size.height - SCENE_PADDING
+  );
+
+  return {
+    left: randomBetween(SCENE_PADDING, maxLeft),
+    top: randomBetween(SCENE_PADDING, maxTop),
+  };
+}
+
+function getRectCenter(rect: Rect) {
+  return {
+    x: (rect.left + rect.right) / 2,
+    y: (rect.top + rect.bottom) / 2,
+  };
+}
+
+function getDistanceBetweenRects(a: Rect, b: Rect) {
+  const aCenter = getRectCenter(a);
+  const bCenter = getRectCenter(b);
+
+  const dx = aCenter.x - bCenter.x;
+  const dy = aCenter.y - bCenter.y;
+
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getSpreadScore(candidateRect: Rect, placedRects: Rect[]) {
+  if (placedRects.length === 0) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  let minDistance = Infinity;
+
+  for (const rect of placedRects) {
+    const distance = getDistanceBetweenRects(candidateRect, rect);
+    if (distance < minDistance) {
+      minDistance = distance;
+    }
+  }
+
+  return minDistance;
+}
+
+function pickBestPosition(
+  containerWidth: number,
+  containerHeight: number,
+  size: CardSize,
+  placedRects: Rect[]
+): CardPosition | null {
+  let bestPosition: CardPosition | null = null;
+  let bestScore = -Infinity;
+
+  for (let attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt += 1) {
+    const candidate = getRandomPosition(containerWidth, containerHeight, size);
+    const candidateRect = createRect(candidate, size);
+
+    const collides = placedRects.some((rect) =>
+      rectsOverlap(candidateRect, rect, CARD_GAP)
+    );
+
+    if (collides) continue;
+
+    const score = getSpreadScore(candidateRect, placedRects);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestPosition = candidate;
+    }
+  }
+
+  return bestPosition;
+}
+
+function generateRandomLayout(containerWidth: number, containerHeight: number): Layout {
+  const keys: CardKey[] = ["preview", "editor", "request"];
+  let bestLayout: Layout | null = null;
+  let bestLayoutScore = -Infinity;
+
+  for (let layoutAttempt = 0; layoutAttempt < LAYOUT_CANDIDATE_COUNT; layoutAttempt += 1) {
+    const placed: Partial<Layout> = {};
+    const placedRects: Rect[] = [];
+    let failed = false;
+
+    for (const key of keys) {
+      const size = CARD_SIZES[key];
+      const chosen = pickBestPosition(
+        containerWidth,
+        containerHeight,
+        size,
+        placedRects
+      );
+
+      if (!chosen) {
+        failed = true;
+        break;
+      }
+
+      placed[key] = chosen;
+      placedRects.push(createRect(chosen, size));
+    }
+
+    if (failed) continue;
+
+    let layoutScore = Infinity;
+
+    for (let i = 0; i < placedRects.length; i += 1) {
+      for (let j = i + 1; j < placedRects.length; j += 1) {
+        const distance = getDistanceBetweenRects(placedRects[i], placedRects[j]);
+        if (distance < layoutScore) {
+          layoutScore = distance;
+        }
+      }
+    }
+
+    if (layoutScore > bestLayoutScore) {
+      bestLayoutScore = layoutScore;
+      bestLayout = placed as Layout;
+    }
+  }
+
+  return bestLayout ?? DEFAULT_LAYOUT;
+}
+
 export default function HeroSystemVisual() {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
   const [phase, setPhase] = useState<Phase>("intro");
   const [itemIndex, setItemIndex] = useState(0);
   const [visibleRequestRows, setVisibleRequestRows] = useState(0);
   const [visibleCodeLines, setVisibleCodeLines] = useState(0);
   const [activeBuildStep, setActiveBuildStep] = useState(0);
+  const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
 
   const current = PROCESS_ITEMS[itemIndex];
+
+  const randomizeLayout = () => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const nextLayout = generateRandomLayout(root.clientWidth, root.clientHeight);
+    setLayout(nextLayout);
+  };
+
+  useEffect(() => {
+    randomizeLayout();
+
+    const onResize = () => {
+      randomizeLayout();
+    };
+
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (phase !== "intro") return;
@@ -291,6 +511,7 @@ export default function HeroSystemVisual() {
     if (phase !== "handoff") return;
 
     const timeout = window.setTimeout(() => {
+      randomizeLayout();
       setItemIndex((currentItemIndex) => (currentItemIndex + 1) % PROCESS_ITEMS.length);
       setVisibleRequestRows(0);
       setVisibleCodeLines(0);
@@ -302,15 +523,20 @@ export default function HeroSystemVisual() {
   }, [phase]);
 
   return (
-    <div className={styles.video} data-phase={phase} aria-hidden="true">
-      <div className={styles.introLayer}>
-        <div className={styles.introStack}>
-          <div className={styles.logo}>Weboryn</div>
-        </div>
-      </div>
-
+    <div
+      ref={rootRef}
+      className={styles.video}
+      data-phase={phase}
+      aria-hidden="true"
+    >
       <div className={styles.scene}>
-        <div className={styles.requestCard}>
+        <div
+          className={styles.requestCard}
+          style={{
+            top: `${layout.request.top}px`,
+            left: `${layout.request.left}px`,
+          }}
+        >
           <div className={styles.requestTop}>
             <span className={styles.requestPill}>{current.requestLabel}</span>
             <span className={styles.requestStatus}>{current.requestStatus}</span>
@@ -355,7 +581,13 @@ export default function HeroSystemVisual() {
           </div>
         </div>
 
-        <div className={styles.editorCard}>
+        <div
+          className={styles.editorCard}
+          style={{
+            top: `${layout.editor.top}px`,
+            left: `${layout.editor.left}px`,
+          }}
+        >
           <div className={styles.editorHeader}>
             <div className={styles.windowDots}>
               <span className={styles.windowDot} />
@@ -462,7 +694,13 @@ export default function HeroSystemVisual() {
           </div>
         </div>
 
-        <div className={styles.previewCard}>
+        <div
+          className={styles.previewCard}
+          style={{
+            top: `${layout.preview.top}px`,
+            left: `${layout.preview.left}px`,
+          }}
+        >
           <div className={styles.previewChrome}>
             <span className={styles.previewPill}>Ready to launch</span>
           </div>
