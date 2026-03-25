@@ -16,13 +16,13 @@ const PRIMARY_NAV_ITEMS = [
   },
   {
     href: "/service",
-    label: "Service",
+    label: "Services",
   },
 ] as const;
 
 const MENU_NAV_ITEMS = [
   {
-    href: "/services",
+    href: "/service",
     label: "Services",
   },
   {
@@ -43,6 +43,33 @@ const ACTION_ITEMS = [
   {
     href: "/login",
     label: "Kirjaudu",
+  },
+] as const;
+
+const MOBILE_NAV_ITEMS = [
+  {
+    href: "/",
+    label: "Home"
+  },
+  {
+    href: "/service",
+    label: "Services",
+  },
+  {
+    href: "/pricing",
+    label: "Pricing",
+  },
+  {
+    href: "/process",
+    label: "How we work",
+  },
+  {
+    href: "/about-us",
+    label: "About us",
+  },
+  {
+    href: "/contact",
+    label: "Contact",
   },
 ] as const;
 
@@ -227,17 +254,16 @@ export default function Header() {
               aria-label="Lisälinkit"
             >
               <div className={styles.menuPanelInner}>
-                <div className={`${styles.menuSection} ${styles.menuSectionMobilePrimary}`}>
-                  <p className={styles.menuSectionLabel}>Navigate</p>
-                  <ul className={styles.menuList}>
-                    {PRIMARY_NAV_ITEMS.map((item) => {
+                <div className={styles.menuMobileShell}>
+                  <ul className={`${styles.menuList} ${styles.menuListMobile}`}>
+                    {MOBILE_NAV_ITEMS.map((item) => {
                       const isActive = isActivePath(pathname, item.href);
 
                       return (
                         <li key={item.href} className={styles.menuItem}>
                           <Link
                             href={item.href}
-                            className={styles.menuLink}
+                            className={`${styles.menuLink} ${styles.menuLinkMobile}`}
                             aria-current={isActive ? "page" : undefined}
                             data-active={isActive}
                             role="menuitem"
@@ -248,11 +274,28 @@ export default function Header() {
                       );
                     })}
                   </ul>
+
+                  <div className={styles.menuMobileAction}>
+                    {ACTION_ITEMS.map((item) => {
+                      const isActive = isActivePath(pathname, item.href);
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={styles.menuActionLink}
+                          aria-current={isActive ? "page" : undefined}
+                          data-active={isActive}
+                          role="menuitem"
+                        >
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
 
-                <div className={`${styles.menuDivider} ${styles.menuDividerMobilePrimary}`} />
-
-                <div className={styles.menuSection}>
+                <div className={`${styles.menuSection} ${styles.menuSectionDesktop}`}>
                   <p className={styles.menuSectionLabel}>Menu</p>
                   <ul className={styles.menuList}>
                     {MENU_NAV_ITEMS.map((item) => {
@@ -275,9 +318,9 @@ export default function Header() {
                   </ul>
                 </div>
 
-                <div className={styles.menuDivider} />
+                <div className={`${styles.menuDivider} ${styles.menuSectionDesktop}`} />
 
-                <div className={styles.menuSection}>
+                <div className={`${styles.menuSection} ${styles.menuSectionDesktop}`}>
                   <p className={styles.menuSectionLabel}>Actions</p>
                   <ul className={styles.menuList}>
                     {ACTION_ITEMS.map((item) => {

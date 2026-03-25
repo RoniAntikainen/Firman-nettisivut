@@ -23,7 +23,7 @@ export default function Footer() {
               >
                 <a href="/">Home</a>
                 <a href="/about-us">About</a>
-                <a href="/services">Services</a>
+                <a href="/service">Services</a>
                 <a href="/contact">Contact</a>
               </nav>
             </div>

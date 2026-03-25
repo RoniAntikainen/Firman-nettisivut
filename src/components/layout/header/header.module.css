@@ -7,7 +7,7 @@
   top: 0;
   z-index: var(--z-index-sticky);
   width: 100%;
-  overflow: hidden;
+  isolation: isolate;
 
   background-color: transparent;
   border-bottom: 1px solid transparent;
@@ -453,8 +453,11 @@
   gap: var(--space-2);
 }
 
-.menuSectionMobilePrimary,
-.menuDividerMobilePrimary {
+.menuSectionDesktop {
+  display: grid;
+}
+
+.menuMobileShell {
   display: none;
 }
 
@@ -546,7 +549,6 @@
   .header {
     background-color: transparent;
     border-bottom-color: transparent;
-    padding-top: var(--safe-top);
   }
 
   .headerScrolled {
@@ -647,10 +649,7 @@
     left: auto;
     z-index: 2;
 
-    width: min(20rem, 86vw);
-    height: var(--viewport-height-fallback);
-    height: var(--viewport-height-stable);
-    height: var(--viewport-height-dynamic);
+    width: min(22rem, 92vw);
     max-height: none;
     overflow: hidden;
 
@@ -675,22 +674,20 @@
   }
 
   .menuPanelInner {
+    display: flex;
+    flex-direction: column;
     min-height: 100%;
-    min-height: var(--viewport-height-fallback);
-    min-height: var(--viewport-height-stable);
-    min-height: var(--viewport-height-dynamic);
     overflow: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
 
-    align-content: start;
-    gap: var(--space-3);
+    justify-content: space-between;
+    gap: var(--space-6);
 
     padding:
-      max(calc(var(--header-height-md) + var(--space-4)), calc(var(--safe-top) + var(--header-height-md)))
-      max(var(--space-4), var(--safe-right))
-      calc(var(--space-10) + var(--safe-bottom))
-      max(var(--space-4), var(--safe-left));
+      calc(var(--header-height-md) + var(--space-4))
+      var(--space-4)
+      calc(var(--space-8) + env(safe-area-inset-bottom));
 
     border: 0;
     border-radius: 0;
@@ -700,20 +697,20 @@
     box-shadow: none;
   }
 
-  .menuSectionMobilePrimary,
-  .menuDividerMobilePrimary {
-    display: block;
+  .menuSectionDesktop {
+    display: none;
   }
 
-  .menuSectionLabel {
-    padding: 0;
-    font-size: var(--text-label-sm-size);
-    line-height: var(--text-label-sm-line-height);
-    letter-spacing: var(--letter-spacing-widest);
+  .menuMobileShell {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-8);
   }
 
-  .menuList {
-    gap: var(--space-0-5);
+  .menuListMobile {
+    gap: var(--space-2);
   }
 
   .menuLink {
@@ -730,12 +727,74 @@
     );
   }
 
-  .menuSectionMobilePrimary .menuLink {
-    min-height: 3.5rem;
+  .menuLinkMobile {
+    min-height: 3.75rem;
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-xl);
+    border-bottom: 0;
     font-size: var(--text-heading-xs-size);
     font-weight: var(--text-heading-xs-weight);
     line-height: var(--text-heading-xs-line-height);
     letter-spacing: var(--text-heading-xs-tracking);
+    color: var(--color-fg-default);
+  }
+
+  .menuLinkMobile:hover {
+    background: color-mix(
+      in srgb,
+      var(--color-surface-primary) 78%,
+      transparent
+    );
+  }
+
+  .menuLinkMobile[data-active="true"] {
+    background: color-mix(
+      in srgb,
+      var(--color-surface-primary) 88%,
+      transparent
+    );
+  }
+
+  .menuMobileAction {
+    display: grid;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid color-mix(
+      in srgb,
+      var(--color-border-soft) 42%,
+      transparent
+    );
+  }
+
+  .menuActionLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.5rem;
+    width: 100%;
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--color-text-primary);
+    color: var(--color-surface-primary);
+    text-decoration: none;
+    font-size: var(--text-label-md-size);
+    line-height: var(--text-label-md-line-height);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-tight);
+    transition:
+      transform 180ms ease,
+      opacity 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .menuActionLink:hover {
+    opacity: 0.92;
+    box-shadow: 0 10px 24px rgba(23, 50, 34, 0.12);
+  }
+
+  .menuActionLink:focus-visible {
+    outline: var(--outline-width) solid transparent;
+    box-shadow: var(--focus-ring);
   }
 }
 
@@ -745,22 +804,21 @@
   }
 
   .menuPanel {
-    width: min(18.5rem, calc(100vw - 16px - var(--safe-right)));
+    width: min(18.5rem, calc(100vw - 16px));
   }
 
   .menuPanelInner {
     padding:
-      max(calc(var(--header-height-md) + var(--space-3)), calc(var(--safe-top) + var(--header-height-md)))
-      max(var(--space-3), var(--safe-right))
-      calc(var(--space-8) + var(--safe-bottom))
-      max(var(--space-3), var(--safe-left));
+      calc(var(--header-height-md) + var(--space-3))
+      var(--space-3)
+      calc(var(--space-7) + env(safe-area-inset-bottom));
   }
 
-  .menuLink {
-    min-height: 3rem;
+  .menuLinkMobile {
+    min-height: 3.4rem;
   }
 
-  .menuSectionMobilePrimary .menuLink {
+  .menuActionLink {
     min-height: 3.25rem;
   }
 }
