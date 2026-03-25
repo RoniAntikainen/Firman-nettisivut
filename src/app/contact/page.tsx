@@ -52,10 +52,10 @@ export default function ContactPage() {
       <section className="sectionNoBg sectionHero">
         <div className="pageContainer pageHeroGrid">
           <div className="pageHeroContent">
-            <h1>
+            <h2>
               Let&apos;s talk about what&apos;s not working and what should be
               built instead.
-            </h1>
+            </h2>
           </div>
         </div>
       </section>

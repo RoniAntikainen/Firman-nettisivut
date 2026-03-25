@@ -17,9 +17,9 @@ export default function AboutUsPage() {
       <section className="sectionNoBg sectionHero">
         <div className="pageContainer pageHeroGrid pageHeroStart">
           <div className="pageHeroContent">
-            <h1>
+            <h2>
               We build systems that are designed to actually work in real use.
-            </h1>
+            </h2>
           </div>
         </div>
       </section>

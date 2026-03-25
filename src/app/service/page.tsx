@@ -57,9 +57,9 @@ export default function ServicePage() {
       <section className="sectionNoBg sectionHero">
         <div className="pageContainer pageHeroGrid pageHeroGridWide">
           <div className="pageHeroContent">
-            <h1>
+            <h2>
               We build digital tools that make everyday work simpler.
-            </h1>
+            </h2>
           </div>
         </div>
       </section>
