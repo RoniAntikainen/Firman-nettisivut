@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./HeroSystemVisual.module.css";
 
 type Phase =
@@ -48,6 +48,11 @@ type Rect = {
   top: number;
   right: number;
   bottom: number;
+};
+
+type Point = {
+  x: number;
+  y: number;
 };
 
 const PROCESS_ITEMS: ProcessItem[] = [
@@ -215,14 +220,28 @@ const DEFAULT_LAYOUT: Layout = {
   preview: { top: 110, left: 520 },
 };
 
-const SCENE_PADDING = 20;
+const MIN_VISIBLE_RATIO = 0.8;
+const MAX_OVERFLOW_RATIO = 0.2;
 const CARD_GAP = 18;
-const MAX_LAYOUT_ATTEMPTS = 120;
-const LAYOUT_CANDIDATE_COUNT = 40;
+const MAX_POSITION_ATTEMPTS = 260;
+const LAYOUT_CANDIDATE_COUNT = 64;
+const TOP_POSITION_POOL_SIZE = 10;
+const TOP_LAYOUT_POOL_SIZE = 12;
 
 function randomBetween(min: number, max: number) {
   if (max <= min) return min;
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffleArray<T>(items: readonly T[]): T[] {
+  const next = [...items];
+
+  for (let index = next.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomBetween(0, index);
+    [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+  }
+
+  return next;
 }
 
 function createRect(position: CardPosition, size: CardSize): Rect {
@@ -234,6 +253,25 @@ function createRect(position: CardPosition, size: CardSize): Rect {
   };
 }
 
+function getRectArea(rect: Rect) {
+  const width = Math.max(0, rect.right - rect.left);
+  const height = Math.max(0, rect.bottom - rect.top);
+  return width * height;
+}
+
+function getIntersectionRect(a: Rect, b: Rect): Rect | null {
+  const left = Math.max(a.left, b.left);
+  const top = Math.max(a.top, b.top);
+  const right = Math.min(a.right, b.right);
+  const bottom = Math.min(a.bottom, b.bottom);
+
+  if (right <= left || bottom <= top) {
+    return null;
+  }
+
+  return { left, top, right, bottom };
+}
+
 function rectsOverlap(a: Rect, b: Rect, gap: number) {
   return !(
     a.right + gap <= b.left ||
@@ -243,27 +281,7 @@ function rectsOverlap(a: Rect, b: Rect, gap: number) {
   );
 }
 
-function getRandomPosition(
-  containerWidth: number,
-  containerHeight: number,
-  size: CardSize
-): CardPosition {
-  const maxLeft = Math.max(
-    SCENE_PADDING,
-    containerWidth - size.width - SCENE_PADDING
-  );
-  const maxTop = Math.max(
-    SCENE_PADDING,
-    containerHeight - size.height - SCENE_PADDING
-  );
-
-  return {
-    left: randomBetween(SCENE_PADDING, maxLeft),
-    top: randomBetween(SCENE_PADDING, maxTop),
-  };
-}
-
-function getRectCenter(rect: Rect) {
+function getRectCenter(rect: Rect): Point {
   return {
     x: (rect.left + rect.right) / 2,
     y: (rect.top + rect.bottom) / 2,
@@ -280,7 +298,55 @@ function getDistanceBetweenRects(a: Rect, b: Rect) {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-function getSpreadScore(candidateRect: Rect, placedRects: Rect[]) {
+function getVisibleAreaRatio(
+  rect: Rect,
+  containerWidth: number,
+  containerHeight: number
+) {
+  const sceneRect: Rect = {
+    left: 0,
+    top: 0,
+    right: containerWidth,
+    bottom: containerHeight,
+  };
+
+  const intersection = getIntersectionRect(rect, sceneRect);
+  if (!intersection) return 0;
+
+  const visibleArea = getRectArea(intersection);
+  const totalArea = getRectArea(rect);
+
+  if (totalArea === 0) return 0;
+
+  return visibleArea / totalArea;
+}
+
+function isVisibleEnough(
+  rect: Rect,
+  containerWidth: number,
+  containerHeight: number
+) {
+  return getVisibleAreaRatio(rect, containerWidth, containerHeight) >= MIN_VISIBLE_RATIO;
+}
+
+function getRandomPositionAllowOverflow(
+  containerWidth: number,
+  containerHeight: number,
+  size: CardSize
+): CardPosition {
+  const minLeft = -Math.round(size.width * MAX_OVERFLOW_RATIO);
+  const maxLeft = Math.round(containerWidth - size.width * MIN_VISIBLE_RATIO);
+
+  const minTop = -Math.round(size.height * MAX_OVERFLOW_RATIO);
+  const maxTop = Math.round(containerHeight - size.height * MIN_VISIBLE_RATIO);
+
+  return {
+    left: randomBetween(minLeft, Math.max(minLeft, maxLeft)),
+    top: randomBetween(minTop, Math.max(minTop, maxTop)),
+  };
+}
+
+function getMinDistanceToPlaced(candidateRect: Rect, placedRects: Rect[]) {
   if (placedRects.length === 0) {
     return Number.MAX_SAFE_INTEGER;
   }
@@ -297,18 +363,43 @@ function getSpreadScore(candidateRect: Rect, placedRects: Rect[]) {
   return minDistance;
 }
 
-function pickBestPosition(
+function getAverageDistanceToPlaced(candidateRect: Rect, placedRects: Rect[]) {
+  if (placedRects.length === 0) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  let totalDistance = 0;
+
+  for (const rect of placedRects) {
+    totalDistance += getDistanceBetweenRects(candidateRect, rect);
+  }
+
+  return totalDistance / placedRects.length;
+}
+
+function pickRandomValidPosition(
   containerWidth: number,
   containerHeight: number,
   size: CardSize,
   placedRects: Rect[]
 ): CardPosition | null {
-  let bestPosition: CardPosition | null = null;
-  let bestScore = -Infinity;
+  const validCandidates: Array<{
+    position: CardPosition;
+    score: number;
+  }> = [];
 
-  for (let attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt += 1) {
-    const candidate = getRandomPosition(containerWidth, containerHeight, size);
+  for (let attempt = 0; attempt < MAX_POSITION_ATTEMPTS; attempt += 1) {
+    const candidate = getRandomPositionAllowOverflow(
+      containerWidth,
+      containerHeight,
+      size
+    );
+
     const candidateRect = createRect(candidate, size);
+
+    if (!isVisibleEnough(candidateRect, containerWidth, containerHeight)) {
+      continue;
+    }
 
     const collides = placedRects.some((rect) =>
       rectsOverlap(candidateRect, rect, CARD_GAP)
@@ -316,65 +407,181 @@ function pickBestPosition(
 
     if (collides) continue;
 
-    const score = getSpreadScore(candidateRect, placedRects);
+    const minDistance = getMinDistanceToPlaced(candidateRect, placedRects);
+    const averageDistance = getAverageDistanceToPlaced(candidateRect, placedRects);
+    const visibleRatio = getVisibleAreaRatio(
+      candidateRect,
+      containerWidth,
+      containerHeight
+    );
 
-    if (score > bestScore) {
-      bestScore = score;
-      bestPosition = candidate;
-    }
+    const score =
+      minDistance * 1.05 +
+      averageDistance * 0.35 +
+      visibleRatio * 140 +
+      Math.random() * 120;
+
+    validCandidates.push({
+      position: candidate,
+      score,
+    });
   }
 
-  return bestPosition;
+  if (validCandidates.length === 0) {
+    return null;
+  }
+
+  validCandidates.sort((a, b) => b.score - a.score);
+
+  const poolSize = Math.min(TOP_POSITION_POOL_SIZE, validCandidates.length);
+  const chosenIndex = randomBetween(0, poolSize - 1);
+
+  return validCandidates[chosenIndex].position;
 }
 
-function generateRandomLayout(containerWidth: number, containerHeight: number): Layout {
-  const keys: CardKey[] = ["preview", "editor", "request"];
-  let bestLayout: Layout | null = null;
-  let bestLayoutScore = -Infinity;
+function generateSingleRandomLayout(
+  containerWidth: number,
+  containerHeight: number
+): Layout | null {
+  const keys = shuffleArray<CardKey>(["preview", "editor", "request"]);
+  const placed: Partial<Layout> = {};
+  const placedRects: Rect[] = [];
 
-  for (let layoutAttempt = 0; layoutAttempt < LAYOUT_CANDIDATE_COUNT; layoutAttempt += 1) {
-    const placed: Partial<Layout> = {};
-    const placedRects: Rect[] = [];
-    let failed = false;
+  for (const key of keys) {
+    const size = CARD_SIZES[key];
 
-    for (const key of keys) {
-      const size = CARD_SIZES[key];
-      const chosen = pickBestPosition(
-        containerWidth,
-        containerHeight,
-        size,
-        placedRects
-      );
+    const chosen = pickRandomValidPosition(
+      containerWidth,
+      containerHeight,
+      size,
+      placedRects
+    );
 
-      if (!chosen) {
-        failed = true;
-        break;
-      }
-
-      placed[key] = chosen;
-      placedRects.push(createRect(chosen, size));
+    if (!chosen) {
+      return null;
     }
 
-    if (failed) continue;
+    placed[key] = chosen;
+    placedRects.push(createRect(chosen, size));
+  }
 
-    let layoutScore = Infinity;
+  return placed as Layout;
+}
 
-    for (let i = 0; i < placedRects.length; i += 1) {
-      for (let j = i + 1; j < placedRects.length; j += 1) {
-        const distance = getDistanceBetweenRects(placedRects[i], placedRects[j]);
-        if (distance < layoutScore) {
-          layoutScore = distance;
-        }
+function getLayoutScore(
+  layout: Layout,
+  containerWidth: number,
+  containerHeight: number
+) {
+  const rects = [
+    createRect(layout.request, CARD_SIZES.request),
+    createRect(layout.editor, CARD_SIZES.editor),
+    createRect(layout.preview, CARD_SIZES.preview),
+  ];
+
+  let minDistance = Infinity;
+  let totalDistance = 0;
+  let totalVisibleRatio = 0;
+
+  for (const rect of rects) {
+    totalVisibleRatio += getVisibleAreaRatio(rect, containerWidth, containerHeight);
+  }
+
+  for (let i = 0; i < rects.length; i += 1) {
+    for (let j = i + 1; j < rects.length; j += 1) {
+      const distance = getDistanceBetweenRects(rects[i], rects[j]);
+      totalDistance += distance;
+
+      if (distance < minDistance) {
+        minDistance = distance;
       }
-    }
-
-    if (layoutScore > bestLayoutScore) {
-      bestLayoutScore = layoutScore;
-      bestLayout = placed as Layout;
     }
   }
 
-  return bestLayout ?? DEFAULT_LAYOUT;
+  return (
+    minDistance * 1.05 +
+    totalDistance * 0.2 +
+    totalVisibleRatio * 120 +
+    Math.random() * 60
+  );
+}
+
+function generateLooseFallbackLayout(
+  containerWidth: number,
+  containerHeight: number
+): Layout | null {
+  for (let attempt = 0; attempt < 180; attempt += 1) {
+    const request = getRandomPositionAllowOverflow(
+      containerWidth,
+      containerHeight,
+      CARD_SIZES.request
+    );
+    const editor = getRandomPositionAllowOverflow(
+      containerWidth,
+      containerHeight,
+      CARD_SIZES.editor
+    );
+    const preview = getRandomPositionAllowOverflow(
+      containerWidth,
+      containerHeight,
+      CARD_SIZES.preview
+    );
+
+    const requestRect = createRect(request, CARD_SIZES.request);
+    const editorRect = createRect(editor, CARD_SIZES.editor);
+    const previewRect = createRect(preview, CARD_SIZES.preview);
+
+    const hasEnoughVisibility =
+      isVisibleEnough(requestRect, containerWidth, containerHeight) &&
+      isVisibleEnough(editorRect, containerWidth, containerHeight) &&
+      isVisibleEnough(previewRect, containerWidth, containerHeight);
+
+    if (!hasEnoughVisibility) continue;
+
+    const hasOverlap =
+      rectsOverlap(requestRect, editorRect, CARD_GAP) ||
+      rectsOverlap(requestRect, previewRect, CARD_GAP) ||
+      rectsOverlap(editorRect, previewRect, CARD_GAP);
+
+    if (hasOverlap) continue;
+
+    return { request, editor, preview };
+  }
+
+  return null;
+}
+
+function generateRandomLayout(
+  containerWidth: number,
+  containerHeight: number
+): Layout {
+  const layouts: Array<{
+    layout: Layout;
+    score: number;
+  }> = [];
+
+  for (let index = 0; index < LAYOUT_CANDIDATE_COUNT; index += 1) {
+    const layout = generateSingleRandomLayout(containerWidth, containerHeight);
+    if (!layout) continue;
+
+    layouts.push({
+      layout,
+      score: getLayoutScore(layout, containerWidth, containerHeight),
+    });
+  }
+
+  if (layouts.length === 0) {
+    return (
+      generateLooseFallbackLayout(containerWidth, containerHeight) ?? DEFAULT_LAYOUT
+    );
+  }
+
+  layouts.sort((a, b) => b.score - a.score);
+
+  const poolSize = Math.min(TOP_LAYOUT_POOL_SIZE, layouts.length);
+  const chosenIndex = randomBetween(0, poolSize - 1);
+
+  return layouts[chosenIndex].layout;
 }
 
 export default function HeroSystemVisual() {
@@ -389,13 +596,13 @@ export default function HeroSystemVisual() {
 
   const current = PROCESS_ITEMS[itemIndex];
 
-  const randomizeLayout = () => {
+  const randomizeLayout = useCallback(() => {
     const root = rootRef.current;
     if (!root) return;
 
     const nextLayout = generateRandomLayout(root.clientWidth, root.clientHeight);
     setLayout(nextLayout);
-  };
+  }, []);
 
   useEffect(() => {
     randomizeLayout();
@@ -409,7 +616,7 @@ export default function HeroSystemVisual() {
     return () => {
       window.removeEventListener("resize", onResize);
     };
-  }, []);
+  }, [randomizeLayout]);
 
   useEffect(() => {
     if (phase !== "intro") return;
@@ -520,7 +727,7 @@ export default function HeroSystemVisual() {
     }, 700);
 
     return () => window.clearTimeout(timeout);
-  }, [phase]);
+  }, [phase, randomizeLayout]);
 
   return (
     <div
