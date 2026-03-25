@@ -10,6 +10,7 @@ body {
   color: var(--color-text-primary);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 main p,

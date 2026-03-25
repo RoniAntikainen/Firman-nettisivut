@@ -7,12 +7,19 @@
   top: 0;
   z-index: var(--z-index-sticky);
   width: 100%;
-  transition: background-color 180ms ease;
+  overflow: hidden;
+
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
 }
 
 .headerScrolled {
-  background: var(--color-surface-primary);
-  border-bottom: 1px solid var(--color-border-soft);
+  background-color: var(--color-surface-primary);
+  border-bottom-color: var(--color-border-soft);
 }
 
 .inner {
@@ -20,7 +27,6 @@
     100% - (var(--page-padding-x-sm) * 2),
     var(--container-7xl)
   );
-  height: var(--header-height-lg);
   margin: 0 auto;
 
   display: flex;
@@ -28,11 +34,19 @@
   justify-content: space-between;
   gap: var(--space-6);
 
-  transition: height 180ms ease;
+  padding-block: calc(
+    (var(--header-height-lg) - var(--nav-item-height)) / 2
+  );
+
+  transition:
+    padding-block 180ms ease,
+    gap 180ms ease;
 }
 
 .headerScrolled .inner {
-  height: var(--header-height-xs);
+  padding-block: calc(
+    (var(--header-height-xs) - var(--nav-item-height)) / 2
+  );
 }
 
 /* =========================================================
@@ -530,13 +544,14 @@
 
 @media (max-width: 48rem) {
   .header {
-    background: transparent;
-    border-bottom: 0;
+    background-color: transparent;
+    border-bottom-color: transparent;
+    padding-top: var(--safe-top);
   }
 
   .headerScrolled {
-    background: var(--color-surface-primary);
-    border-bottom: 1px solid var(--color-border-soft);
+    background-color: var(--color-surface-primary);
+    border-bottom-color: var(--color-border-soft);
   }
 
   .inner {
@@ -547,8 +562,13 @@
       100% - (var(--page-padding-x-sm) * 2),
       var(--container-7xl)
     );
-    height: var(--header-height-md);
+    min-height: var(--header-height-md);
+    padding-block: 0;
     gap: var(--space-4);
+  }
+
+  .headerScrolled .inner {
+    padding-block: 0;
   }
 
   .desktopArea {
@@ -628,13 +648,20 @@
     z-index: 2;
 
     width: min(20rem, 86vw);
+    height: var(--viewport-height-fallback);
+    height: var(--viewport-height-stable);
+    height: var(--viewport-height-dynamic);
     max-height: none;
     overflow: hidden;
 
     transform: translateX(100%);
     transform-origin: right center;
 
-    background: color-mix(in srgb, var(--color-surface-primary) 90%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--color-surface-primary) 90%,
+      transparent
+    );
     border-left: 1px solid var(--color-border-soft);
     backdrop-filter: blur(18px);
 
@@ -649,16 +676,21 @@
 
   .menuPanelInner {
     min-height: 100%;
+    min-height: var(--viewport-height-fallback);
+    min-height: var(--viewport-height-stable);
+    min-height: var(--viewport-height-dynamic);
     overflow: auto;
     overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 
     align-content: start;
     gap: var(--space-3);
 
     padding:
-      calc(var(--header-height-md) + var(--space-4))
-      var(--space-4)
-      calc(var(--space-8) + env(safe-area-inset-bottom));
+      max(calc(var(--header-height-md) + var(--space-4)), calc(var(--safe-top) + var(--header-height-md)))
+      max(var(--space-4), var(--safe-right))
+      calc(var(--space-10) + var(--safe-bottom))
+      max(var(--space-4), var(--safe-left));
 
     border: 0;
     border-radius: 0;
@@ -691,7 +723,11 @@
     font-size: var(--text-body-md-size);
     line-height: var(--text-body-md-line-height);
     letter-spacing: var(--letter-spacing-normal);
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border-soft) 38%, transparent);
+    border-bottom: 1px solid color-mix(
+      in srgb,
+      var(--color-border-soft) 38%,
+      transparent
+    );
   }
 
   .menuSectionMobilePrimary .menuLink {
@@ -709,14 +745,15 @@
   }
 
   .menuPanel {
-    width: min(18.5rem, calc(100vw - 16px));
+    width: min(18.5rem, calc(100vw - 16px - var(--safe-right)));
   }
 
   .menuPanelInner {
     padding:
-      calc(var(--header-height-md) + var(--space-3))
-      var(--space-3)
-      calc(var(--space-7) + env(safe-area-inset-bottom));
+      max(calc(var(--header-height-md) + var(--space-3)), calc(var(--safe-top) + var(--header-height-md)))
+      max(var(--space-3), var(--safe-right))
+      calc(var(--space-8) + var(--safe-bottom))
+      max(var(--space-3), var(--safe-left));
   }
 
   .menuLink {
