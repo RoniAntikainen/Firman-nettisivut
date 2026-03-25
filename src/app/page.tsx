@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
+import HeroSystemVisual from "@/components/visualElements/HeroSystemVisual";
 import Button from "@/components/buttons/button";
 import { useScrollFade } from "@/hooks/fade/useScrollFade";
 
@@ -22,6 +22,7 @@ export default function Home() {
               We build apps around what you need.
             </h2>
           </div>
+          <HeroSystemVisual />
         </div>
       </section>
 
