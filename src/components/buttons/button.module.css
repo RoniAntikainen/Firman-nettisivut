@@ -1,0 +1,64 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--color-text-primary);
+  background: var(--color-button-primary);
+  color: var(--color-surface-primary);
+  text-decoration: none;
+  font-size: var(--text-label-md-size);
+  font-weight: var(--text-label-md-weight);
+  line-height: var(--text-label-md-line-height);
+  letter-spacing: var(--letter-spacing-tight);
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--color-text-primary) 92%, white);
+  border-color: color-mix(in srgb, var(--color-text-primary) 92%, white);
+  box-shadow: 0 10px 30px
+    color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--color-surface-primary) 88%, transparent),
+    0 0 0 6px color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .button {
+    min-width: 148px;
+    min-height: 50px;
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .button {
+    width: 100%;
+    max-width: 240px;
+  }
+}
+
+@media (max-width: 380px) {
+  .button {
+    max-width: none;
+    min-width: 0;
+  }
+}

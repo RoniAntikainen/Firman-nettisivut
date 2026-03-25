@@ -1,31 +1,43 @@
+/* =========================================================
+   1. HEADER / BASE LAYOUT
+   ========================================================= */
+
 .header {
   position: sticky;
   top: 0;
   z-index: var(--z-index-sticky);
   width: 100%;
-  transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    backdrop-filter 180ms ease,
-    -webkit-backdrop-filter 180ms ease;
+  transition: background-color 180ms ease;
 }
 
 .headerScrolled {
   background: var(--color-surface-primary);
+  border-bottom: 1px solid var(--color-border-soft);
 }
 
-
-
-
 .inner {
-  width: min(100% - (var(--page-padding-x-sm) * 2), var(--container-7xl));
-  min-height: var(--header-height-lg);
+  width: min(
+    100% - (var(--page-padding-x-sm) * 2),
+    var(--container-7xl)
+  );
+  height: var(--header-height-lg);
   margin: 0 auto;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
+
+  transition: height 180ms ease;
 }
+
+.headerScrolled .inner {
+  height: var(--header-height-xs);
+}
+
+/* =========================================================
+   2. BRAND / LOGO
+   ========================================================= */
 
 .brand {
   display: flex;
@@ -37,17 +49,31 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   min-height: var(--size-10);
   padding: 0;
   border: 0;
-  text-decoration: none;
+
   color: var(--color-fg-default);
+  text-decoration: none;
+
   font-family: var(--font-family-heading);
   font-size: var(--text-label-lg-size);
   line-height: var(--text-label-lg-line-height);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--letter-spacing-tight);
-  transition: var(--transition-default);
+
+  transition:
+    color 180ms ease,
+    opacity 180ms ease,
+    box-shadow 180ms ease,
+    font-size 180ms ease,
+    line-height 180ms ease;
+}
+
+.headerScrolled .brandLink {
+  font-size: var(--text-label-md-size);
+  line-height: var(--text-label-md-line-height);
 }
 
 .brandLink:hover {
@@ -57,32 +83,56 @@
 
 .brandLink:focus-visible {
   outline: var(--outline-width) solid transparent;
-  box-shadow: var(--focus-ring);
   border-radius: var(--radius-md);
+  box-shadow: var(--focus-ring);
 }
 
+.logo {
+  height: 34px;
+  object-fit: cover;
+  object-position: center 48.5%;
+  transition:
+    height 180ms ease,
+    width 180ms ease;
+}
+
+.headerScrolled .logo {
+  height: 28px;
+}
+
+/* =========================================================
+   3. DESKTOP AREA WRAPPER
+   ========================================================= */
+
 .desktopArea {
+  flex: 1 1 auto;
+  min-width: 0;
+
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-1);
-  flex: 1 1 auto;
-  min-width: 0;
 }
 
+/* =========================================================
+   4. DESKTOP NAVIGATION
+   ========================================================= */
+
 .navigation {
+  min-width: 0;
+
   display: flex;
   align-items: center;
-  min-width: 0;
 }
 
 .navigationList {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
   margin: 0;
   padding: 0;
   list-style: none;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .navigationItem {
@@ -92,21 +142,36 @@
 
 .navigationLink {
   position: relative;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   min-height: var(--nav-item-height);
   padding: 0 var(--space-3);
   border-radius: var(--radius-full);
-  text-decoration: none;
+
   color: var(--color-fg-subtle);
+  text-decoration: none;
+  white-space: nowrap;
+
   font-family: var(--font-family-base);
   font-size: var(--text-label-md-size);
   line-height: var(--text-label-md-line-height);
   font-weight: var(--font-weight-medium);
   letter-spacing: var(--letter-spacing-normal);
-  white-space: nowrap;
-  transition: var(--transition-default);
+
+  transition:
+    color 180ms ease,
+    opacity 180ms ease,
+    box-shadow 180ms ease,
+    font-size 180ms ease,
+    line-height 180ms ease;
+}
+
+.headerScrolled .navigationLink {
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
 }
 
 .navigationLink::after {
@@ -115,12 +180,15 @@
   left: var(--space-3);
   right: var(--space-3);
   bottom: 0.45rem;
+
   height: 1.5px;
   border-radius: var(--radius-full);
+
   background: currentColor;
   opacity: 0;
   transform: scaleX(0.72);
   transform-origin: center;
+
   transition:
     opacity var(--duration-normal) var(--easing-standard),
     transform var(--duration-normal) var(--easing-standard);
@@ -146,34 +214,56 @@
   transform: scaleX(1);
 }
 
+/* =========================================================
+   5. MENU GROUP / BUTTON (BASE)
+   ========================================================= */
+
 .menuGroup {
   position: relative;
+  z-index: 5;
+  flex: 0 0 auto;
+
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
 }
 
 .menuButton {
   position: relative;
+  z-index: 6;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+
   min-height: var(--nav-item-height);
   padding: 0 var(--space-3);
   border: 0;
   border-radius: var(--radius-full);
+
   background: transparent;
   color: var(--color-fg-subtle);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+
   font-family: var(--font-family-base);
   font-size: var(--text-label-md-size);
   line-height: var(--text-label-md-line-height);
   font-weight: var(--font-weight-medium);
   letter-spacing: var(--letter-spacing-normal);
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: none;
-  transition: var(--transition-default);
+
+  transition:
+    color 180ms ease,
+    opacity 180ms ease,
+    box-shadow 180ms ease,
+    font-size 180ms ease,
+    line-height 180ms ease;
+}
+
+.headerScrolled .menuButton {
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
 }
 
 .menuButton::after {
@@ -182,27 +272,30 @@
   left: var(--space-3);
   right: var(--space-3);
   bottom: 0.45rem;
+
   height: 1.5px;
   border-radius: var(--radius-full);
+
   background: currentColor;
   opacity: 0;
   transform: scaleX(0.72);
   transform-origin: center;
+
   transition:
     opacity var(--duration-normal) var(--easing-standard),
     transform var(--duration-normal) var(--easing-standard);
 }
 
 .menuButton:hover {
-  color: var(--color-fg-default);
   background: transparent;
+  color: var(--color-fg-default);
   border-color: transparent;
   box-shadow: none;
 }
 
 .menuButton[data-open="true"] {
-  color: var(--color-fg-default);
   background: transparent;
+  color: var(--color-fg-default);
   border-color: transparent;
   box-shadow: none;
   font-weight: var(--font-weight-semibold);
@@ -223,39 +316,61 @@
   box-shadow: var(--focus-ring);
 }
 
+/* =========================================================
+   6. MENU BUTTON CONTENT
+   ========================================================= */
+
 .menuButtonLabel {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
 }
 
+.menuButtonLabelMobile {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+
+  white-space: nowrap;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+}
+
 .menuButtonIcon {
   position: relative;
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
 }
 
 .menuButtonLine {
   position: absolute;
-  width: 0.625rem;
-  height: 1.5px;
+  width: 0.8rem;
+  height: 2px;
   border-radius: var(--radius-full);
+
   background: currentColor;
+
   transition:
     transform var(--duration-normal) var(--easing-standard),
-    opacity var(--duration-normal) var(--easing-standard);
+    opacity var(--duration-normal) var(--easing-standard),
+    width var(--duration-normal) var(--easing-standard);
 }
 
 .menuButtonLine:first-child {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .menuButtonLine:last-child {
-  transform: translateY(2px);
+  width: 0.56rem;
+  transform: translate(0.12rem, 3px);
 }
 
 .menuButton[data-open="true"] .menuButtonLine:first-child {
@@ -263,7 +378,16 @@
 }
 
 .menuButton[data-open="true"] .menuButtonLine:last-child {
+  width: 0.8rem;
   transform: translateY(0) rotate(-45deg);
+}
+
+/* =========================================================
+   7. MENU PANEL / CONTENT
+   ========================================================= */
+
+.menuBackdrop {
+  display: none;
 }
 
 .menuPanel {
@@ -271,12 +395,19 @@
   top: calc(100% + var(--space-3));
   right: 0;
   z-index: var(--z-index-dropdown);
-  width: min(24rem, calc(100vw - (var(--page-padding-x-sm) * 2)));
+
+  width: min(
+    24rem,
+    calc(100vw - (var(--page-padding-x-sm) * 2))
+  );
+
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+
   transform: translateY(-0.5rem) scale(0.98);
   transform-origin: top right;
+
   transition:
     opacity var(--duration-normal) var(--easing-standard),
     visibility var(--duration-normal) var(--easing-standard),
@@ -294,12 +425,13 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-4);
+
   padding: var(--space-4);
+  border-radius: var(--radius-2xl);
+
   background: rgba(113, 170, 255, 0.079);
-  border-radius: 0 0  var(--radius-2xl) var(--radius-2xl);
   backdrop-filter: blur(30px);
   box-shadow: var(--shadow-xl);
-  margin-top: 6px;
 }
 
 .menuSection {
@@ -307,27 +439,39 @@
   gap: var(--space-2);
 }
 
+.menuSectionMobilePrimary,
+.menuDividerMobilePrimary {
+  display: none;
+}
+
 .menuSectionLabel {
   margin: 0;
   padding: 0 var(--space-1);
+
   color: var(--color-fg-muted);
+  text-transform: uppercase;
+
   font-family: var(--font-family-base);
   font-size: var(--text-label-sm-size);
   line-height: var(--text-label-sm-line-height);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--letter-spacing-wider);
-  text-transform: uppercase;
 }
 
 .menuDivider {
   width: 100%;
   height: 1px;
-  background: color-mix(in srgb, var(--color-border-muted) 84%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-border-muted) 84%,
+    transparent
+  );
 }
 
 .menuList {
   display: grid;
   gap: var(--space-1);
+
   margin: 0;
   padding: 0;
   list-style: none;
@@ -339,18 +483,23 @@
 
 .menuLink {
   position: relative;
+
   display: flex;
   align-items: center;
-  min-height: 2.75rem;
+
   width: 100%;
+  min-height: 2.75rem;
   padding: 0 var(--space-3);
   border-radius: var(--radius-xl);
-  text-decoration: none;
+
   color: var(--color-fg-subtle);
+  text-decoration: none;
+
   font-family: var(--font-family-base);
   font-size: var(--text-body-sm-size);
   line-height: var(--text-body-sm-line-height);
   font-weight: var(--font-weight-medium);
+
   transition: var(--transition-default);
 }
 
@@ -359,15 +508,15 @@
   background: rgba(113, 170, 255, 0.079);
 }
 
+.menuLink[data-active="true"] {
+  color: var(--color-fg-default);
+  font-weight: var(--font-weight-semibold);
+}
+
 .menuLink:hover::before,
 .menuLink[data-active="true"]::before {
   opacity: 1;
   transform: translateY(-50%) scale(1);
-}
-
-.menuLink[data-active="true"] {
-  color: var(--color-fg-default);
-  font-weight: var(--font-weight-semibold);
 }
 
 .menuLink:focus-visible {
@@ -375,41 +524,206 @@
   box-shadow: var(--focus-ring);
 }
 
+/* =========================================================
+   8. MOBILE ONLY
+   ========================================================= */
+
 @media (max-width: 48rem) {
+  .header {
+    background: transparent;
+    border-bottom: 0;
+  }
+
+  .headerScrolled {
+    background: var(--color-surface-primary);
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
   .inner {
-    width: min(100% - (var(--page-padding-x-sm) * 2), var(--container-7xl));
-    min-height: var(--header-height-md);
+    position: relative;
+    z-index: 4;
+
+    width: min(
+      100% - (var(--page-padding-x-sm) * 2),
+      var(--container-7xl)
+    );
+    height: var(--header-height-md);
     gap: var(--space-4);
   }
 
   .desktopArea {
-    gap: var(--space-2);
-  }
-
-  .navigationList {
+    flex: 0 0 auto;
+    min-width: auto;
     gap: 0;
   }
 
-  .navigationLink {
-    min-height: 2.25rem;
-    padding: 0 var(--space-2-5);
-    font-size: var(--text-label-sm-size);
-    line-height: var(--text-label-sm-line-height);
+  .navigation {
+    display: none;
+  }
+
+  .brandLink {
+    min-height: 3rem;
   }
 
   .menuButton {
-    min-height: 2.25rem;
-    padding: 0 var(--space-2-5);
-    font-size: var(--text-label-sm-size);
-    line-height: var(--text-label-sm-line-height);
+    min-width: 3rem;
+    min-height: 3rem;
+    padding: 0;
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--color-fg-default);
+    font-size: var(--text-label-md-size);
+    line-height: var(--text-label-md-line-height);
+  }
+
+  .menuButton::after {
+    display: none;
+  }
+
+  .menuButtonLabel {
+    display: none;
+  }
+
+  .menuButton[data-open="true"] {
+    background: color-mix(
+      in srgb,
+      var(--color-surface-primary) 76%,
+      white
+    );
+    box-shadow: 0 10px 24px rgba(23, 50, 34, 0.1);
+  }
+
+  .menuBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+
+    display: block;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    background: rgba(15, 23, 20, 0.12);
+    backdrop-filter: blur(8px);
+
+    transition:
+      opacity var(--duration-normal) var(--easing-standard),
+      visibility var(--duration-normal) var(--easing-standard);
+  }
+
+  .menuBackdrop[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .menuPanel {
-    width: min(22rem, calc(100vw - (var(--page-padding-x-sm) * 2)));
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    z-index: 2;
+
+    width: min(20rem, 86vw);
+    max-height: none;
+    overflow: hidden;
+
+    transform: translateX(100%);
+    transform-origin: right center;
+
+    background: color-mix(in srgb, var(--color-surface-primary) 90%, transparent);
+    border-left: 1px solid var(--color-border-soft);
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+      -28px 0 56px rgba(23, 50, 34, 0.12),
+      -10px 0 24px rgba(23, 50, 34, 0.06);
+  }
+
+  .menuPanel[data-open="true"] {
+    transform: translateX(0);
   }
 
   .menuPanelInner {
-    padding: var(--space-3);
-    border-radius: var(--radius-xl);
+    min-height: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+
+    align-content: start;
+    gap: var(--space-3);
+
+    padding:
+      calc(var(--header-height-md) + var(--space-4))
+      var(--space-4)
+      calc(var(--space-8) + env(safe-area-inset-bottom));
+
+    border: 0;
+    border-radius: 0;
+
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .menuSectionMobilePrimary,
+  .menuDividerMobilePrimary {
+    display: block;
+  }
+
+  .menuSectionLabel {
+    padding: 0;
+    font-size: var(--text-label-sm-size);
+    line-height: var(--text-label-sm-line-height);
+    letter-spacing: var(--letter-spacing-widest);
+  }
+
+  .menuList {
+    gap: var(--space-0-5);
+  }
+
+  .menuLink {
+    min-height: 3.2rem;
+    padding: 0;
+    border-radius: 0;
+    font-size: var(--text-body-md-size);
+    line-height: var(--text-body-md-line-height);
+    letter-spacing: var(--letter-spacing-normal);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border-soft) 38%, transparent);
+  }
+
+  .menuSectionMobilePrimary .menuLink {
+    min-height: 3.5rem;
+    font-size: var(--text-heading-xs-size);
+    font-weight: var(--text-heading-xs-weight);
+    line-height: var(--text-heading-xs-line-height);
+    letter-spacing: var(--text-heading-xs-tracking);
+  }
+}
+
+@media (max-width: 380px) {
+  .inner {
+    width: min(100% - 16px, var(--container-7xl));
+  }
+
+  .menuPanel {
+    width: min(18.5rem, calc(100vw - 16px));
+  }
+
+  .menuPanelInner {
+    padding:
+      calc(var(--header-height-md) + var(--space-3))
+      var(--space-3)
+      calc(var(--space-7) + env(safe-area-inset-bottom));
+  }
+
+  .menuLink {
+    min-height: 3rem;
+  }
+
+  .menuSectionMobilePrimary .menuLink {
+    min-height: 3.25rem;
   }
 }

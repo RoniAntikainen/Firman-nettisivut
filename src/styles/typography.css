@@ -1,0 +1,87 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-line-height);
+  font-weight: var(--text-body-md-weight);
+  color: var(--color-text-primary);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+main p,
+main li,
+main dt,
+main dd {
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-line-height);
+}
+
+main h1 {
+  font-family: var(--font-family-heading);
+  font-size: clamp(2.75rem, 6vw, var(--text-display-size));
+  font-weight: var(--text-display-weight);
+  color: var(--color-text-primary);
+  letter-spacing: var(--text-display-tracking);
+  text-wrap: balance;
+  max-width: 14ch;
+  margin: 0;
+  line-height: var(--text-display-line-height);
+}
+
+main h2 {
+  font-family: var(--font-family-heading);
+  font-size: clamp(4.125rem, 4.8vw, var(--text-heading-xl-size));
+  font-weight: var(--text-heading-xl-weight);
+  color: var(--color-text-primary);
+  letter-spacing: var(--text-heading-xl-tracking);
+  text-wrap: balance;
+  max-width: 12ch;
+  margin: 0;
+  line-height: var(--text-heading-xl-line-height);
+}
+
+main h3 {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.5rem, 3vw, var(--text-heading-md-size));
+  font-weight: var(--text-heading-md-weight);
+  color: var(--color-text-primary);
+  letter-spacing: var(--text-heading-md-tracking);
+  text-wrap: balance;
+  max-width: 18ch;
+  margin: 0;
+  line-height: var(--text-heading-md-line-height);
+}
+
+main h4 {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.25rem, 2.3vw, var(--text-heading-sm-size));
+  font-weight: var(--text-heading-sm-weight);
+  color: var(--color-text-primary);
+  letter-spacing: var(--text-heading-sm-tracking);
+  margin: 0;
+  line-height: var(--text-heading-sm-line-height);
+}
+
+main h5 {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.125rem, 1.9vw, var(--text-heading-xs-size));
+  font-weight: var(--text-heading-xs-weight);
+  color: var(--color-text-primary);
+  letter-spacing: var(--text-heading-xs-tracking);
+  margin: 0;
+  line-height: var(--text-heading-xs-line-height);
+}
+
+main h6 {
+  font-family: var(--font-family-heading);
+  font-size: var(--text-label-lg-size);
+  font-weight: var(--text-label-lg-weight);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-tight);
+  margin: 0;
+  line-height: var(--text-label-lg-line-height);
+}

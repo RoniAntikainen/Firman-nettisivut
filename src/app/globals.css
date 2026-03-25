@@ -1,4 +1,7 @@
 @import "../styles/reset.css";
 @import "../styles/tokens/color.css";
 @import "../styles/tokens/tokens.css";
-@import "../styles/component/section.css"
+@import "../styles/component/card.css";
+@import "../styles/component/page-layout.css";
+@import "../styles/component/section.css";
+@import "../styles/typography.css";

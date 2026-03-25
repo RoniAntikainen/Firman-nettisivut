@@ -14,18 +14,18 @@
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
 
-  --font-size-2xs: 1.03125rem;
-  --font-size-xs: 1.125rem;
-  --font-size-sm: 1.3125rem;
-  --font-size-md: 1.5rem;
-  --font-size-lg: 1.6875rem;
-  --font-size-xl: 1.875rem;
-  --font-size-2xl: 2.25rem;
-  --font-size-3xl: 2.8125rem;
-  --font-size-4xl: 3.375rem;
-  --font-size-5xl: 4.5rem;
-  --font-size-6xl: 5.625rem;
-  --font-size-7xl: 6.75rem;
+  --font-size-2xs: 0.75rem;
+  --font-size-xs: 0.875rem;
+  --font-size-sm: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --font-size-3xl: 2.25rem;
+  --font-size-4xl: 3rem;
+  --font-size-5xl: 3.75rem;
+  --font-size-6xl: 4.5rem;
+  --font-size-7xl: 5.5rem;
 
   --line-height-tightest: 1;
   --line-height-tighter: 1.1;
@@ -42,7 +42,7 @@
   --letter-spacing-wider: 0.04em;
   --letter-spacing-widest: 0.08em;
 
-  --text-caption-size: var(--font-size-xs);
+  --text-caption-size: var(--font-size-2xs);
   --text-caption-line-height: var(--line-height-normal);
   --text-caption-weight: var(--font-weight-medium);
 
@@ -58,7 +58,7 @@
   --text-body-lg-line-height: var(--line-height-relaxed);
   --text-body-lg-weight: var(--font-weight-regular);
 
-  --text-label-sm-size: var(--font-size-xs);
+  --text-label-sm-size: var(--font-size-2xs);
   --text-label-sm-line-height: var(--line-height-normal);
   --text-label-sm-weight: var(--font-weight-semibold);
   --text-label-md-size: var(--font-size-sm);
@@ -93,7 +93,7 @@
   --text-heading-xl-weight: var(--font-weight-bold);
   --text-heading-xl-tracking: var(--letter-spacing-tighter);
 
-  --text-display-size: var(--font-size-7xl);
+  --text-display-size: var(--font-size-6xl);
   --text-display-line-height: var(--line-height-tightest);
   --text-display-weight: var(--font-weight-bold);
   --text-display-tracking: var(--letter-spacing-tighter);
@@ -195,7 +195,7 @@
   /* SIZING */
   --size-0: 0;
   --size-1: 0.375rem;
-  --size-2: 0.75rem;
+  --size-2: 1.00rem;
   --size-3: 1.125rem;
   --size-4: 1.5rem;
   --size-5: 1.875rem;

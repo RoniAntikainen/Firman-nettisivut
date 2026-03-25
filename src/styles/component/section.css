@@ -1,5 +1,69 @@
 section {
-    padding: var(--space-10);   
+  display: flex;
+  min-height: 80vh;
+  padding: clamp(72px, 9vw, 112px) 0;
+  background: var(--color-surface-primary);
+}
+
+.sectionHero {
+  min-height: 80vh;
+  min-height: 80svh;
+}
+
+.sectionNoBg {
+  background: transparent;
+}
+
+.sectionSurfaceFade {
+  --fade-start: 12%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-surface-primary) 72%, transparent) var(--fade-start),
+    var(--color-surface-primary) 100%
+  );
+}
+
+.sectionFadeDownTop {
+  --fade-start: 74%;
+  background: linear-gradient(
+    to bottom,
+    var(--color-surface-primary) 0%,
+    color-mix(in srgb, var(--color-surface-primary) 68%, transparent) var(--fade-start),
+    transparent 100%
+  );
+}
+
+.sectionCta {
+  min-height: auto;
+  padding-top: 96px;
+  padding-bottom: 112px;
+}
+
+@media (max-width: 640px) {
+  section {
+    min-height: auto;
+    padding: 72px 0;
+  }
+
+  .sectionHero {
     min-height: 80vh;
-    background: var(--color-surface-primary);
+    min-height: 80svh;
+  }
+
+  .sectionCta {
+    padding-top: 72px;
+    padding-bottom: 84px;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 64px 0;
+  }
+
+  .sectionCta {
+    padding-top: 64px;
+    padding-bottom: 72px;
+  }
 }
