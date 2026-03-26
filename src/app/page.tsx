@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import HeroSystemVisual from "@/components/visualElements/HeroSystemVisual";
+import HeroSystemVisual from "@/components/hero-system-visual/HeroSystemVisual";
 import Button from "@/components/buttons/button";
 import { useScrollFade } from "@/hooks/fade/useScrollFade";
 
