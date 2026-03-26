@@ -13,9 +13,11 @@ const TIME_SLOTS = [
   "Fri 11:00 CET",
 ] as const;
 
+type TimeSlot = (typeof TIME_SLOTS)[number];
+
 export default function BookPage() {
   const [email, setEmail] = useState("");
-  const [slot, setSlot] = useState(TIME_SLOTS[0]);
+  const [slot, setSlot] = useState<TimeSlot>(TIME_SLOTS[0]);
   const [note, setNote] = useState("");
   const [didSubmit, setDidSubmit] = useState(false);
 
@@ -89,7 +91,7 @@ export default function BookPage() {
                 <select
                   className={styles.fieldInput}
                   value={slot}
-                  onChange={(event) => setSlot(event.target.value)}
+                  onChange={(event) => setSlot(event.target.value as TimeSlot)}
                 >
                   {TIME_SLOTS.map((time) => (
                     <option key={time} value={time}>
