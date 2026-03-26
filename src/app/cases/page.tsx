@@ -12,7 +12,7 @@ const CASES = [
     client: "Anonymized booking business",
     problem: "The main action was hidden behind competing sections and too many clicks.",
     change: "We reduced the path, moved the primary CTA higher and removed the dead-end branch.",
-    metric: "Booking path: 6 clicks -> 3 clicks",
+    metric: "Booking path: 6 clicks to 3 clicks",
     effect: "Less hesitation and a faster route to the core action.",
     impact: "Impact: fewer abandoned decision points during the booking flow.",
   },
@@ -21,7 +21,7 @@ const CASES = [
     client: "Anonymized client service team",
     problem: "Status updates, files and next actions were split across three tools and messages.",
     change: "We combined the workflow into one portal view with one owner-facing next step.",
-    metric: "Operational view: 3 tools -> 1 portal",
+    metric: "Operational view: 3 tools to 1 portal",
     effect: "Fewer repeated checks and faster daily decisions.",
     impact: "Impact: less context switching and clearer ownership in daily work.",
   },
@@ -40,18 +40,18 @@ const FILTERS = ["All", "Booking", "Portal", "Dashboard"] as const;
 
 const TESTIMONIALS = [
   {
-    sector: "Sector / Service Ops",
+    sector: "Sector · Service Ops",
     quote: "We finally had one place for status, files and the next step.",
   },
   {
-    sector: "Sector / Booking",
+    sector: "Sector · Booking",
     quote: "The main action became obvious and the page stopped fighting itself.",
   },
 ] as const;
 
 const CASE_SUMMARY = [
-  "Booking flow: 6 clicks -> 3 clicks",
-  "Client workflow: 3 tools -> 1 portal",
+  "Booking flow: 6 clicks to 3 clicks",
+  "Client workflow: 3 tools to 1 portal",
   "Dashboard use: fewer repeated checks across the day",
 ] as const;
 
@@ -131,7 +131,7 @@ export default function CasesPage() {
             {visibleCases.map((item) => (
               <article key={item.client} className={`cardPanel cardPanelSoft ${styles.caseCard}`}>
                 <div className={styles.caseMeta}>
-                  <span className="cardEyebrow">{item.type} / {item.client}</span>
+                  <span className="cardEyebrow">{item.type} · {item.client}</span>
                   <h3 className="cardTitle">{item.metric}</h3>
                   <p className="cardText">{item.effect}</p>
                 </div>

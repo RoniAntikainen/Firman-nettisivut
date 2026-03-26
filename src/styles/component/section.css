@@ -9,6 +9,7 @@ section {
   min-height: 80vh;
   min-height: 80svh;
   min-height: calc(var(--viewport-height-stable) * 0.8);
+  padding-top: 10px !important;
 }
 
 .sectionNoBg {
@@ -39,6 +40,12 @@ section {
   min-height: auto;
   padding-top: 96px;
   padding-bottom: 112px;
+}
+
+@media (min-width: 901px) {
+  .desktop-align-start {
+    align-items: start;
+  }
 }
 
 @media (max-width: 640px) {

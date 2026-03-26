@@ -6,21 +6,6 @@ import Button from "@/components/buttons/button";
 import buttonStyles from "@/components/buttons/button.module.css";
 import { useScrollFade } from "@/hooks/fade/useScrollFade";
 
-const HOME_TRUST = [
-  {
-    label: "Sector",
-    value: "SaaS / Service Ops",
-  },
-  {
-    label: "Sector",
-    value: "Booking / Client Portals",
-  },
-  {
-    label: "Quote",
-    value: "We finally had one clear route to the main action.",
-  },
-] as const;
-
 const HOME_LOGOS = [
   "Service operations",
   "Client portals",
@@ -37,12 +22,12 @@ const HOME_OFFER = [
 const HOME_NUMBERS = [
   {
     label: "Proof",
-    value: "6 -> 3",
+    value: "6 to 3",
     note: "Booking path reduced from six clicks to three.",
   },
   {
     label: "Proof",
-    value: "3 -> 1",
+    value: "3 to 1",
     note: "Client updates moved from three tools into one portal view.",
   },
   {
@@ -50,12 +35,6 @@ const HOME_NUMBERS = [
     value: "24h",
     note: "Reply on weekdays, with scope and next step clarified early.",
   },
-] as const;
-
-const HERO_VISUAL_POINTS = [
-  "Scope first",
-  "Working version early",
-  "Clean handoff",
 ] as const;
 
 export default function Home() {
@@ -68,7 +47,7 @@ export default function Home() {
   return (
     <main>
       <section className="sectionNoBg sectionHero">
-        <div className="pageContainer pageHeroGrid">
+        <div className="pageContainer pageHeroGrid desktop-align-start">
           <div className="pageHeroContent">
             <div className="pageIntro">
               <span className="cardEyebrow">Focused digital systems</span>
@@ -84,13 +63,6 @@ export default function Home() {
                 and customer flows that should be easier to use.
               </p>
 
-              <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureMd">
-                <span className="cardEyebrow">Promise</span>
-                {HOME_OFFER.map((item) => (
-                  <p key={item} className="cardText">{item}</p>
-                ))}
-              </div>
-
               <div className="pageActionRow">
                 <Button href="/contact">Get your focused plan</Button>
                 <Button href="/service" className={buttonStyles.buttonGhost}>
@@ -101,94 +73,68 @@ export default function Home() {
           </div>
 
           <div className="pageHeroAnchor">
-            <div className="pageHeroAnchorTop">
-              <span className="cardEyebrow">Visual anchor</span>
-              <div className="pageHeroAnchorMarks">
-                {HERO_VISUAL_POINTS.map((item) => (
-                  <span key={item} className="pageHeroAnchorMark">{item}</span>
-                ))}
-              </div>
-            </div>
-
             <HeroSystemVisual />
-
-            <div className="pageHeroAnchorBottom cardPanel cardPanelSoft">
-              <span className="cardEyebrow">Why us</span>
-              <p className="cardValue">We cut before we build.</p>
-              <p className="cardText">
-                Most teams already have enough moving parts.
-                <br />
-                The value is making one path obvious and usable.
-              </p>
-            </div>
           </div>
         </div>
       </section>
 
       <section ref={proofRef} className="sectionSurfaceFade">
-        <div className="pageContainer pageSplit pageSplitCenter">
-          <div className="pageIntro">
-            <h2>
-              One clearer path
-              <br />
-              changes the whole page.
-            </h2>
-
-            <p className="pageText">
-              This is where design turns into measurable change.
-            </p>
-
-            <p className="pageText">
-              Fewer choices. Faster action. Less hesitation.
-            </p>
-
-            <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureSm">
-              <span className="cardEyebrow">Why this is lower risk</span>
-              <p className="cardText">
-                We scope one measurable workflow first.
+        <div className="pageContainer pageFlow">
+          <div className="pageSplit pageSplitCenter">
+            <div className="pageIntro">
+              <h2>
+                One clearer path
                 <br />
-                That cuts wasted build time before it starts.
+                changes the whole system.
+              </h2>
+
+              <p className="pageText">
+                This is where structure starts paying back.
+              </p>
+
+              <p className="pageText">
+                We remove noise before build starts.
+                <br />
+                Then the main action becomes easier to find and finish.
               </p>
             </div>
-          </div>
 
-          <div className="pageVisual">
-            <div className="cardStack cardStackMeasure">
-              <article className="cardPanel cardPanelSoft">
-                <span className="cardEyebrow">Proof</span>
-                <h3 className="cardTitle">Before</h3>
-                <p className="cardText">
-                  Four competing actions.
-                  <br />
-                  Six clicks to reach booking.
-                </p>
-              </article>
+            <div className="pageVisual">
+              <article className="cardPanel cardPanelSoft cardPanelGapLg pageStoryCard">
+                <div className="pageStoryCardTop">
+                  <span className="cardEyebrow">Before and after</span>
+                  <p className="cardValue">One path is easier to notice, trust and finish.</p>
+                </div>
 
-              <article className="cardPanel cardPanelSoft">
-                <span className="cardEyebrow">After</span>
-                <h3 className="cardTitle">Single primary path</h3>
-                <p className="cardText">
-                  Main CTA visible immediately.
-                  <br />
-                  Three clicks to complete the action.
-                </p>
-              </article>
+                <div className="pageStoryCompare">
+                  <div className="pageStoryColumn">
+                    <span className="cardEyebrow">Before</span>
+                    <p className="cardValue">Too many equal choices</p>
+                    <p className="cardText">Four competing actions on the same screen.</p>
+                    <p className="cardText">Six clicks before the user reaches booking.</p>
+                  </div>
 
-              <article className="cardPanel cardPanelSoft">
-                <span className="cardEyebrow">System map</span>
-                <p className="cardText">
-                  Request -&gt; Scope -&gt; Build -&gt; Preview
-                  <br />
-                  One owner. One measurable workflow.
-                </p>
+                  <div className="pageStoryColumn">
+                    <span className="cardEyebrow">After</span>
+                    <p className="cardValue">Single primary path</p>
+                    <p className="cardText">Main action visible immediately.</p>
+                    <p className="cardText">Three clicks to complete the action.</p>
+                  </div>
+                </div>
+
+                <div className="pageStoryDivider" aria-hidden="true" />
+
+                <div className="pageStoryMeta">
+                  <span className="cardEyebrow">Why it works</span>
+                  <p className="cardValue">The path gets defined before the build starts.</p>
+                  <p className="cardText">
+                    {HOME_OFFER[0]}
+                  </p>
+                </div>
               </article>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section ref={detailRef} className="sectionFadeDownTop">
-        <div className="pageContainer pageFlow">
           <div className="pageCheckpoint cardPanel cardPanelSoft cardPanelGapMd">
             <div className="pageCheckpointCopy">
               <span className="cardEyebrow">Checkpoint</span>
@@ -207,18 +153,22 @@ export default function Home() {
               </Button>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="pageFlowIntro">
+      <section ref={detailRef} className="sectionFadeDownTop">
+        <div className="pageContainer pageFlow">
+          <div className="pageFlowIntro pageFlowIntroWide">
             <h2>
-              Start here,
+              Choose the next view
               <br />
-              then go deeper.
+              based on what you need.
             </h2>
 
             <p className="pageText">
               Home is the overview.
               <br />
-              The next page depends on what you need to confirm.
+              The next step depends on what you need to confirm next.
             </p>
 
             <div className="pageActionRow">
@@ -229,79 +179,108 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="pageGrid3">
-            <article className="cardPanel cardPanelSoft cardPanelGapMd">
-              <span className="cardEyebrow">Services</span>
-              <h3 className="cardTitle">What you get and what it costs.</h3>
-              <p className="cardText">
-                Use this when you need deliverables, ranges and fit.
-              </p>
+          <div className="pageFlow pageFlowTight">
+            <article className="pageCheckpoint pageCheckpointInline cardPanel cardPanelSoft cardPanelGapMd">
+              <div className="pageCheckpointCopy">
+                <span className="cardEyebrow">01 · Services</span>
+                <p className="cardValue">Go here if you need scope, deliverables and pricing.</p>
+                <p className="cardText">
+                  This is the practical page.
+                  <br />
+                  It shows what gets built, what is included and what it typically costs.
+                </p>
+                <div className="pageActionRow">
+                  <Button href="/service">See services</Button>
+                </div>
+              </div>
             </article>
 
-            <article className="cardPanel cardPanelSoft cardPanelGapMd">
-              <span className="cardEyebrow">Cases</span>
-              <h3 className="cardTitle">What changed and why it matters.</h3>
-              <p className="cardText">
-                Use this when you need proof, examples and outcomes.
-              </p>
+            <article className="pageCheckpoint pageCheckpointInline cardPanel cardPanelSoft cardPanelGapMd">
+              <div className="pageCheckpointCopy">
+                <span className="cardEyebrow">02 · Cases</span>
+                <p className="cardValue">Go here if you need proof and concrete outcomes.</p>
+                <p className="cardText">
+                  This is the evidence page.
+                  <br />
+                  It shows what changed, why it mattered and what improved.
+                </p>
+                <div className="pageActionRow">
+                  <Button href="/cases" className={buttonStyles.buttonGhost}>
+                    See proof
+                  </Button>
+                </div>
+              </div>
             </article>
 
-            <article className="cardPanel cardPanelSoft cardPanelGapMd">
-              <span className="cardEyebrow">About</span>
-              <h3 className="cardTitle">Who builds this and how they work.</h3>
-              <p className="cardText">
-                Use this when you need trust, fit and working style.
-              </p>
+            <article className="pageCheckpoint pageCheckpointInline cardPanel cardPanelSoft cardPanelGapMd">
+              <div className="pageCheckpointCopy">
+                <span className="cardEyebrow">03 · About</span>
+                <p className="cardValue">Go here if you need trust, fit and working style.</p>
+                <p className="cardText">
+                  This is the studio page.
+                  <br />
+                  It shows who builds this, how the work runs and when the fit is right.
+                </p>
+                <div className="pageActionRow">
+                  <Button href="/about-us" className={buttonStyles.buttonGhost}>
+                    See about
+                  </Button>
+                </div>
+              </div>
             </article>
           </div>
 
-          <div className="pageGrid3">
+          <div className="pageFlowIntro pageSectionBreak">
+            <h2>
+              What usually improves
+              <br />
+              first.
+            </h2>
+
+            <p className="pageText">
+              These are the earliest signs that the structure is getting better.
+            </p>
+          </div>
+
+          <div className="pageStatRow">
             {HOME_NUMBERS.map((item) => (
-              <article key={item.note} className="cardPanel cardPanelSoft cardPanelGapMd">
+              <article key={item.note} className="pageStatItem cardPanel cardPanelSoft cardPanelGapMd">
                 <span className="cardEyebrow">{item.label}</span>
                 <p className="cardValue">{item.value}</p>
                 <p className="cardText">{item.note}</p>
               </article>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="pageGrid3">
-            <article className="cardPanel cardPanelSoft cardPanelGapMd">
-              <span className="cardEyebrow">Landing page</span>
-              <h3 className="cardTitle">One offer. One action.</h3>
-              <p className="cardText">
-                Best when the page needs one clear decision.
-              </p>
-            </article>
+      <section className="sectionNoBg sectionCta">
+        <div className="pageContainer pageFlow">
+          <div className="pageFlowIntro">
+            <h2>
+              If the fit is real,
+              <br />
+              keep it simple.
+            </h2>
 
-            <article className="cardPanel cardPanelSoft cardPanelGapMd">
-              <span className="cardEyebrow">Dashboard</span>
-              <h3 className="cardTitle">Important signals first.</h3>
-              <p className="cardText">
-                Best when a team needs fewer repeated checks.
-              </p>
-            </article>
-
-            <article className="cardPanel cardPanelSoft cardPanelGapMd">
-              <span className="cardEyebrow">Client portal</span>
-              <h3 className="cardTitle">Status, files and next step.</h3>
-              <p className="cardText">
-                Best when updates and handoff happen too manually.
-              </p>
-            </article>
+            <p className="pageText">
+              You do not need a full brief.
+              <br />
+              One workflow is enough to start the conversation.
+            </p>
           </div>
 
-          <div className="pageGrid3">
-            {HOME_TRUST.map((item) => (
-              <article key={item.value} className="cardPanel cardPanelSoft cardPanelGapMd">
-                <span className="cardEyebrow">{item.label}</span>
-                <p className="cardValue">{item.value}</p>
-              </article>
-            ))}
-          </div>
+          <div className="pageCheckpoint cardPanel cardPanelSoft cardPanelGapMd">
+            <div className="pageCheckpointCopy">
+              <span className="cardEyebrow">Where this fits</span>
+              <p className="cardValue">Best for service operations, booking flows, client portals and internal tools.</p>
+              <p className="cardText">
+                If one workflow is slowing the team down,
+                <br />
+                this is probably worth fixing now.
+              </p>
+            </div>
 
-          <div className="cardPanel cardPanelSoft cardPanelGapMd">
-            <span className="cardEyebrow">Where this already fits</span>
             <div className="pageActionRow">
               {HOME_LOGOS.map((item) => (
                 <span key={item} className="cardText">{item}</span>
@@ -309,9 +288,17 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="cardPanel cardPanelSoft cardPanelGapMd">
-            <span className="cardEyebrow">Decision</span>
-            <p className="cardValue">If one workflow is slowing the team down, this is worth fixing now.</p>
+          <div className="pageCheckpoint cardPanel cardPanelSoft cardPanelGapMd">
+            <div className="pageCheckpointCopy">
+              <span className="cardEyebrow">Decision</span>
+              <p className="cardValue">If the problem is real, the next step is a focused plan.</p>
+              <p className="cardText">
+                Show us the workflow.
+                <br />
+                We will point to the clearest next step.
+              </p>
+            </div>
+
             <div className="pageActionRow">
               <Button href="/contact">Tell us what is not working</Button>
               <Button href="/cases" className={buttonStyles.buttonGhost}>

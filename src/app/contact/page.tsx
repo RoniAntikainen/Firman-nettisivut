@@ -234,7 +234,7 @@ export default function ContactPage() {
                   name="preferred_times"
                   value={preferredTimes}
                   onChange={(event) => setPreferredTimes(event.target.value)}
-                  placeholder="Tue 10:00 EET / Thu 14:00 CET / Fri 09:00 GMT"
+                  placeholder="Tue 10:00 EET, Thu 14:00 CET, Fri 09:00 GMT"
                 />
               </label>
 

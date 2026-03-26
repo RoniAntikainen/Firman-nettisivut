@@ -153,6 +153,8 @@ a.cardValue:focus-visible {
   display: inline-flex;
   justify-content: center;
   color: var(--color-text-primary);
+  font-size: 0.9em;
+  transform: translateY(0.02em);
 }
 
 @media (max-width: 640px) {

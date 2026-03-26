@@ -176,7 +176,7 @@ export default function AboutUsPage() {
                 {WHAT_WE_DO_NOT_DO.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">We don&apos;t {item}.</span>
                   </li>
@@ -266,7 +266,7 @@ export default function AboutUsPage() {
                 {BEST_FIT.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>
@@ -282,7 +282,7 @@ export default function AboutUsPage() {
                 {NOT_FOR_US.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">Not a fit if {item}.</span>
                   </li>

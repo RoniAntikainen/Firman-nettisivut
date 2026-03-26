@@ -15,7 +15,9 @@ type CardSlotOrder = {
   preview: CardSlotKey;
 };
 
-
+function isSameCardSlotOrder(a: CardSlotOrder, b: CardSlotOrder) {
+  return a.request === b.request && a.editor === b.editor && a.preview === b.preview;
+}
 
 function getRandomCardSlotOrder(): CardSlotOrder {
   const slots: CardSlotKey[] = ["request", "editor", "preview"];
@@ -32,6 +34,16 @@ function getRandomCardSlotOrder(): CardSlotOrder {
     editor: slots[1],
     preview: slots[2],
   };
+}
+
+function getNextRandomCardSlotOrder(current: CardSlotOrder) {
+  let next = current;
+
+  while (isSameCardSlotOrder(next, current)) {
+    next = getRandomCardSlotOrder();
+  }
+
+  return next;
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -80,6 +92,18 @@ function getBuildStepForPhase(phase: Phase) {
     default:
       return 0;
   }
+}
+
+function getNextRandomIndex(currentIndex: number, length: number) {
+  if (length <= 1) return 0;
+
+  let nextIndex = currentIndex;
+
+  while (nextIndex === currentIndex) {
+    nextIndex = Math.floor(Math.random() * length);
+  }
+
+  return nextIndex;
 }
 
 export default function HeroSystemVisual() {
@@ -387,17 +411,9 @@ export default function HeroSystemVisual() {
     const timeout = window.setTimeout(() => {
       setActiveLayoutIndex((currentIndex) => {
         if (layoutSequence.length === 0) return 0;
-        if (layoutSequence.length === 1) return 0;
-
-        let nextIndex = currentIndex;
-
-        while (nextIndex === currentIndex) {
-          nextIndex = Math.floor(Math.random() * layoutSequence.length);
-        }
-
-        return nextIndex;
+        return getNextRandomIndex(currentIndex, layoutSequence.length);
       });
-      setCardSlotOrder(getRandomCardSlotOrder());
+      setCardSlotOrder((currentOrder) => getNextRandomCardSlotOrder(currentOrder));
 
       setItemIndex((currentItemIndex) => (currentItemIndex + 1) % PROCESS_ITEMS.length);
       setVisibleRequestRows(0);

@@ -5,7 +5,7 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: var(--z-index-sticky);
+  z-index: calc(var(--z-index-dropdown) + 2);
   width: 100%;
   isolation: isolate;
 
@@ -234,7 +234,7 @@
 
 .menuGroup {
   position: relative;
-  z-index: 5;
+  z-index: calc(var(--z-index-dropdown) + 3);
   flex: 0 0 auto;
 
   display: flex;
@@ -243,7 +243,7 @@
 
 .menuButton {
   position: relative;
-  z-index: 6;
+  z-index: calc(var(--z-index-dropdown) + 4);
 
   display: inline-flex;
   align-items: center;
@@ -367,7 +367,7 @@
 .menuButtonLine {
   position: absolute;
   width: 0.8rem;
-  height: 2px;
+  height: 2.25px;
   border-radius: var(--radius-full);
 
   background: currentColor;
@@ -396,31 +396,68 @@
   transform: translateY(0) rotate(-45deg);
 }
 
+.menuButton[data-open="true"] .menuButtonIcon {
+  color: var(--color-fg-default);
+}
+
 /* =========================================================
    7. MENU PANEL / CONTENT
    ========================================================= */
 
 .menuBackdrop {
-  display: none;
-}
+  position: fixed;
+  inset: 0;
+  z-index: 1;
 
-.menuPanel {
-  position: absolute;
-  top: calc(100% + var(--space-3));
-  right: 0;
-  z-index: var(--z-index-dropdown);
-
-  width: min(
-    24rem,
-    calc(100vw - (var(--page-padding-x-sm) * 2))
-  );
+  display: block;
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transform: translateY(-0.5rem) scale(0.98);
-  transform-origin: top right;
+  background: rgba(15, 23, 20, 0.12);
+  backdrop-filter: blur(8px);
+
+  transition:
+    opacity var(--duration-normal) var(--easing-standard),
+    visibility var(--duration-normal) var(--easing-standard);
+}
+
+.menuBackdrop[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.menuPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  z-index: calc(var(--z-index-dropdown) + 1);
+
+  width: min(28rem, 92vw);
+  max-height: none;
+  overflow: hidden;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateX(100%);
+  transform-origin: right center;
+
+  background: color-mix(
+    in srgb,
+    var(--color-surface-primary) 88%,
+    transparent
+  );
+  border-left: 1px solid rgba(17, 17, 17, 0.08);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    -28px 0 56px rgba(23, 50, 34, 0.12),
+    -10px 0 24px rgba(23, 50, 34, 0.06);
 
   transition:
     opacity var(--duration-normal) var(--easing-standard),
@@ -432,20 +469,24 @@
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateY(0) scale(1);
+  transform: translateX(0);
 }
 
 .menuPanelInner {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
 
-  padding: var(--space-4);
-  border-radius: var(--radius-2xl);
+  justify-content: space-between;
+  gap: 32px;
 
-  background: rgba(113, 170, 255, 0.079);
-  backdrop-filter: blur(30px);
-  box-shadow: var(--shadow-xl);
+  padding: 96px 24px 32px;
+
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
 .menuSection {
@@ -463,12 +504,49 @@
 
 .menuSectionLabel {
   margin: 0;
-  padding: 0 var(--space-1);
+  padding: 0;
 
   color: var(--color-fg-muted);
   text-transform: uppercase;
 
   font-family: var(--font-family-base);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.menuIntro {
+  display: grid;
+  gap: 10px;
+  padding: 4px 2px 18px;
+}
+
+.menuIntroText {
+  margin: 0;
+  max-width: 32ch;
+  color: var(--color-fg-subtle);
+  font-size: var(--text-body-sm-size);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.menuDesktopGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 16px;
+}
+
+.menuColumn {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.menuColumnLabel {
+  margin: 0;
+  color: var(--color-fg-muted);
+  text-transform: uppercase;
   font-size: var(--text-label-sm-size);
   line-height: var(--text-label-sm-line-height);
   font-weight: var(--font-weight-semibold);
@@ -487,7 +565,7 @@
 
 .menuList {
   display: grid;
-  gap: var(--space-1);
+  gap: 8px;
 
   margin: 0;
   padding: 0;
@@ -505,29 +583,36 @@
   align-items: center;
 
   width: 100%;
-  min-height: 2.75rem;
-  padding: 0 var(--space-3);
-  border-radius: var(--radius-xl);
+  min-height: 3rem;
+  padding: 0 16px;
+  border-radius: 18px;
 
   color: var(--color-fg-subtle);
   text-decoration: none;
 
   font-family: var(--font-family-base);
   font-size: var(--text-body-sm-size);
-  line-height: var(--text-body-sm-line-height);
+  line-height: 1.4;
   font-weight: var(--font-weight-medium);
 
-  transition: var(--transition-default);
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .menuLink:hover {
   color: var(--color-fg-default);
-  background: rgba(113, 170, 255, 0.079);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.06);
 }
 
 .menuLink[data-active="true"] {
   color: var(--color-fg-default);
   font-weight: var(--font-weight-semibold);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
 }
 
 .menuLink:hover::before,
@@ -539,6 +624,43 @@
 .menuLink:focus-visible {
   outline: var(--outline-width) solid transparent;
   box-shadow: var(--focus-ring);
+}
+
+.menuMeta {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.menuMetaLabel {
+  margin: 0;
+  color: var(--color-fg-muted);
+  text-transform: uppercase;
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.menuMetaLink {
+  color: var(--color-fg-default);
+  text-decoration: none;
+  font-size: var(--text-body-sm-size);
+  line-height: 1.5;
+  font-weight: var(--font-weight-medium);
+}
+
+.menuMetaLink:hover {
+  color: var(--color-fg-default);
+  opacity: var(--hover-opacity);
+}
+
+.menuMetaLink:focus-visible {
+  outline: var(--outline-width) solid transparent;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-md);
 }
 
 /* =========================================================
@@ -608,85 +730,17 @@
   }
 
 
-  .menuBackdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-
-    display: block;
-
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-
-    background: rgba(15, 23, 20, 0.12);
-    backdrop-filter: blur(8px);
-
-    transition:
-      opacity var(--duration-normal) var(--easing-standard),
-      visibility var(--duration-normal) var(--easing-standard);
-  }
-
-  .menuBackdrop[data-open="true"] {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
   .menuPanel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: auto;
-    z-index: 2;
-
     width: min(22rem, 92vw);
-    max-height: none;
-    overflow: hidden;
-
-    transform: translateX(100%);
-    transform-origin: right center;
-
-    background: color-mix(
-      in srgb,
-      var(--color-surface-primary) 90%,
-      transparent
-    );
-    border-left: 1px solid var(--color-border-soft);
-    backdrop-filter: blur(18px);
-
-    box-shadow:
-      -28px 0 56px rgba(23, 50, 34, 0.12),
-      -10px 0 24px rgba(23, 50, 34, 0.06);
-  }
-
-  .menuPanel[data-open="true"] {
-    transform: translateX(0);
   }
 
   .menuPanelInner {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    overflow: auto;
-    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-
-    justify-content: space-between;
-    gap: var(--space-6);
 
     padding:
       calc(var(--header-height-md) + var(--space-4))
       var(--space-4)
       calc(var(--space-8) + env(safe-area-inset-bottom));
-
-    border: 0;
-    border-radius: 0;
-
-    background: transparent;
-    backdrop-filter: none;
-    box-shadow: none;
   }
 
   .menuSectionDesktop {

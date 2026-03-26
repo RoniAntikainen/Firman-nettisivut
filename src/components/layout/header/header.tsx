@@ -11,47 +11,54 @@ const PRIMARY_NAV_ITEMS = [
     label: "Home",
   },
   {
-    href: "/about-us",
-    label: "About us",
-  },
-  {
-    href: "/service",
-    label: "Services",
-  },
-  {
-    href: "/process",
-    label: "Process",
-  },
-  {
-    href: "/cases",
-    label: "Cases",
-  },
-  {
-    href: "/book",
-    label: "Book call",
-  },
-] as const;
-
-const MENU_NAV_ITEMS = [
-  {
-    href: "/process",
-    label: "How we work",
-  },
-  {
-    href: "/about-us",
-    label: "About us",
-  },
-  {
     href: "/contact",
     label: "Contact",
   },
+] as const;
+
+const MENU_GROUPS = [
   {
-    href: "/cases",
-    label: "Cases",
+    label: "Overview",
+    items: [
+      {
+        href: "/",
+        label: "Home",
+      },
+      {
+        href: "/about-us",
+        label: "About us",
+      },
+      {
+        href: "/contact",
+        label: "Contact",
+      },
+    ],
   },
   {
-    href: "/book",
-    label: "Book call",
+    label: "Work",
+    items: [
+      {
+        href: "/service",
+        label: "Services",
+      },
+      {
+        href: "/cases",
+        label: "Cases",
+      },
+    ],
+  },
+  {
+    label: "Process",
+    items: [
+      {
+        href: "/process",
+        label: "How we work",
+      },
+      {
+        href: "/book",
+        label: "Book call",
+      },
+    ],
   },
 ] as const;
 
@@ -237,7 +244,9 @@ export default function Header() {
               aria-haspopup="menu"
               data-open={isMenuOpen}
             >
-              <span className={styles.menuButtonLabel}>Menu</span>
+              <span className={styles.menuButtonLabel}>
+                {isMenuOpen ? "Close" : "Menu"}
+              </span>
               <span className={styles.menuButtonLabelMobile}>Open navigation</span>
               <span className={styles.menuButtonIcon} aria-hidden="true">
                 <span className={styles.menuButtonLine} />
@@ -284,26 +293,50 @@ export default function Header() {
                 </div>
 
                 <div className={`${styles.menuSection} ${styles.menuSectionDesktop}`}>
-                  <p className={styles.menuSectionLabel}>Menu</p>
-                  <ul className={styles.menuList}>
-                    {MENU_NAV_ITEMS.map((item) => {
-                      const isActive = isActivePath(pathname, item.href);
+                  <div className={styles.menuIntro}>
+                    <p className={styles.menuSectionLabel}>Navigation</p>
+                    <p className={styles.menuIntroText}>
+                      Start anywhere, but use this menu when you want
+                      the full picture.
+                    </p>
+                  </div>
+                  <div className={styles.menuDesktopGrid}>
+                    {MENU_GROUPS.map((group) => (
+                      <div key={group.label} className={styles.menuColumn}>
+                        <p className={styles.menuColumnLabel}>{group.label}</p>
+                        <ul className={styles.menuList}>
+                          {group.items.map((item) => {
+                            const isActive = isActivePath(pathname, item.href);
 
-                      return (
-                        <li key={item.href} className={styles.menuItem}>
-                          <Link
-                            href={item.href}
-                            className={styles.menuLink}
-                            aria-current={isActive ? "page" : undefined}
-                            data-active={isActive}
-                            role="menuitem"
-                          >
-                            {item.label}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                            return (
+                              <li key={item.href} className={styles.menuItem}>
+                                <Link
+                                  href={item.href}
+                                  className={styles.menuLink}
+                                  aria-current={isActive ? "page" : undefined}
+                                  data-active={isActive}
+                                  role="menuitem"
+                                >
+                                  {item.label}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className={styles.menuMeta}>
+                    <p className={styles.menuMetaLabel}>Direct contact</p>
+                    <Link
+                      href="/contact"
+                      className={styles.menuMetaLink}
+                      aria-current={isActivePath(pathname, "/contact") ? "page" : undefined}
+                    >
+                      Tell us what needs to work better
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

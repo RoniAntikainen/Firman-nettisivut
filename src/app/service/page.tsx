@@ -9,7 +9,7 @@ import { useScrollFade } from "@/hooks/fade/useScrollFade";
 const DELIVERABLES = [
   "Fully built pages (no templates)",
   "Editable components",
-  "Clean structure (Next.js / React)",
+  "Clean structure (Next.js + React)",
   "Fast load times",
   "Mobile optimized",
 ] as const;
@@ -54,7 +54,7 @@ const DURATION_DETAILS = [
 const EXAMPLES = [
   "Built pages: one landing page, service page or booking flow with real implementation.",
   "Reusable components: sections, cards, UI blocks and CTA patterns that can be edited later.",
-  "Clean structure: clear Next.js / React files, handoff notes and agreed next steps.",
+  "Clean structure: clear Next.js + React files, handoff notes and agreed next steps.",
 ] as const;
 
 const INCLUDED_EXCLUDED = [
@@ -75,15 +75,15 @@ const MICRO_PROOFS = [
 
 const CASES = [
   {
-    label: "Case / anonymized",
+    label: "Case study",
     title: "Booking path cleanup",
-    result: "6 steps -> 3 steps",
+    result: "6 steps to 3",
     note: "Primary action moved into the first screen and the dead-end branch was removed.",
   },
   {
-    label: "Case / anonymized",
+    label: "Case study",
     title: "Client update flow",
-    result: "3 tools -> 1 view",
+    result: "3 tools to 1 view",
     note: "Status, files and next action were brought into one portal instead of scattered messages.",
   },
 ] as const;
@@ -207,7 +207,7 @@ export default function ServicePage() {
               {DELIVERABLES.map((item) => (
                 <li key={item} className="cardListItem">
                   <span className="cardMark" aria-hidden="true">
-                    /
+                    •
                   </span>
                   <span className="cardText">{item}</span>
                 </li>
@@ -279,7 +279,7 @@ export default function ServicePage() {
                 {FIT_CASES.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>
@@ -296,7 +296,7 @@ export default function ServicePage() {
                 {SCOPE_RULES.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>
@@ -325,7 +325,7 @@ export default function ServicePage() {
                 {PRICING_DETAILS.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>
@@ -402,7 +402,7 @@ export default function ServicePage() {
                 {DURATION_DETAILS.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>

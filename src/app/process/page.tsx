@@ -182,7 +182,7 @@ export default function ProcessPage() {
                 {PHASE_OUTPUTS.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>
@@ -198,7 +198,7 @@ export default function ProcessPage() {
                 {DONE_DEFINITION.map((item) => (
                   <li key={item} className="cardListItem">
                     <span className="cardMark" aria-hidden="true">
-                      /
+                      •
                     </span>
                     <span className="cardText">{item}</span>
                   </li>
