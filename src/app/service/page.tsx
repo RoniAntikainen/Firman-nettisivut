@@ -129,6 +129,12 @@ const PROOF_CARDS = [
   },
 ] as const;
 
+const OFFER_POINTS = [
+  "Best when one workflow is costing time, attention or completed actions.",
+  "We work from one owner, one measurable path and one clear first release.",
+  "If the fit is wrong, we say that before build starts.",
+] as const;
+
 export default function ServicePage() {
   const deliverablesRef = useRef<HTMLElement | null>(null);
   const cardsRef = useRef<HTMLElement | null>(null);
@@ -142,6 +148,7 @@ export default function ServicePage() {
         <div className="pageContainer pageHeroGrid pageHeroGridWide">
           <div className="pageHeroContent">
             <div className="pageIntro">
+              <span className="cardEyebrow">Deep service view</span>
               <h1>What you actually get.</h1>
 
               <p className="pageHeroText">
@@ -150,15 +157,19 @@ export default function ServicePage() {
                 Working components.
               </p>
 
-            <div className="pageActionRow">
-              <Button href="/contact">Tell us what you need</Button>
-              <Button href="/process" className={buttonStyles.buttonGhost}>
-                See the process
-              </Button>
-              <Button href="/cases" className={buttonStyles.buttonGhost}>
-                See proof
-              </Button>
-            </div>
+              <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureMd">
+                <span className="cardEyebrow">Offer</span>
+                {OFFER_POINTS.map((item) => (
+                  <p key={item} className="cardText">{item}</p>
+                ))}
+              </div>
+
+              <div className="pageActionRow">
+                <Button href="/contact">Get a scoped recommendation</Button>
+                <Button href="/cases" className={buttonStyles.buttonGhost}>
+                  See proof
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -180,13 +191,13 @@ export default function ServicePage() {
         <div className="pageContainer pageSplit pageSplitCenter">
           <div className="pageIntro">
             <h2>
-              Deliverables.
+              Scope, output and handoff.
             </h2>
 
             <p className="pageText">
-              This page is about output.
+              This is the page for deciding
               <br />
-              Not philosophy.
+              what gets built and what stays out.
             </p>
           </div>
 
@@ -212,6 +223,25 @@ export default function ServicePage() {
 
       <section ref={cardsRef} className="sectionFadeDownTop">
         <div className="pageContainer pageFlow">
+          <div className="pageCheckpoint cardPanel cardPanelSoft cardPanelGapMd">
+            <div className="pageCheckpointCopy">
+              <span className="cardEyebrow">Checkpoint</span>
+              <p className="cardValue">If one of these outputs matches the real need, the next step is scope.</p>
+              <p className="cardText">
+                Not a long proposal.
+                <br />
+                Just one workflow, one owner and one clear first release.
+              </p>
+            </div>
+
+            <div className="pageActionRow">
+              <Button href="/contact">Get a scoped recommendation</Button>
+              <Button href="/process" className={buttonStyles.buttonGhost}>
+                See how it runs
+              </Button>
+            </div>
+          </div>
+
           <div className="pageFlowIntro">
             <h2>
               Built for specific jobs.
@@ -281,7 +311,7 @@ export default function ServicePage() {
         <div className="pageContainer pageSplit pageSplitCenter">
           <div className="pageIntro">
             <h2>
-              Pricing logic.
+              Scope and pricing.
             </h2>
 
             <p className="pageText">

@@ -4,6 +4,31 @@
   gap: 12px;
 }
 
+.casesList {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.caseCard {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.caseMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.caseDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .filterButton {
   min-height: 40px;
   padding: 0 14px;
@@ -21,4 +46,10 @@
   background: #111;
   border-color: #111;
   color: #fff;
+}
+
+@media (max-width: 900px) {
+  .caseCard {
+    grid-template-columns: 1fr;
+  }
 }

@@ -8,8 +8,37 @@
   min-height: 176px;
 }
 
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.timelineRow {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.timelineMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 @media (max-width: 768px) {
   .timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .timelineRow {
     grid-template-columns: 1fr;
   }
 }

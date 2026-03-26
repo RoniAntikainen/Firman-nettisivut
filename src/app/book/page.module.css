@@ -45,3 +45,18 @@
 .success {
   color: var(--color-text-primary);
 }
+
+.error {
+  margin: 0;
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-body-sm-line-height);
+  color: #8f1d1d;
+}
+
+.inlineLink {
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-body-sm-line-height);
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}

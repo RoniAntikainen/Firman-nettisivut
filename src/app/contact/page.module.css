@@ -2,6 +2,32 @@
   width: 100%;
 }
 
+.contactGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.contactGuide {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contactSteps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contactStep {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 120px;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -61,6 +87,13 @@
   color: var(--color-text-primary);
 }
 
+.formError {
+  margin: 0;
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-body-sm-line-height);
+  color: #8f1d1d;
+}
+
 .inlineLink {
   font-size: var(--text-label-sm-size);
   line-height: var(--text-body-sm-line-height);
@@ -77,4 +110,10 @@
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
 }

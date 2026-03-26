@@ -70,6 +70,12 @@ const DONE_DEFINITION = [
   "The deliverable is ready to hand off or continue in the next phase.",
 ] as const;
 
+const PROCESS_PROMISE = [
+  "One owner and one measurable workflow before build expands.",
+  "Early working version before polish becomes the focus.",
+  "Clear handoff instead of hidden delivery debt.",
+] as const;
+
 export default function ProcessPage() {
   const timelineRef = useRef<HTMLElement | null>(null);
 
@@ -81,6 +87,7 @@ export default function ProcessPage() {
         <div className="pageContainer pageHeroGrid pageHeroGridWide">
           <div className="pageHeroContent">
             <div className="pageIntro">
+              <span className="cardEyebrow">Delivery and risk</span>
               <h1>
                 From request
                 <br />
@@ -93,10 +100,17 @@ export default function ProcessPage() {
                 risk reduction.
               </p>
 
+              <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureMd">
+                <span className="cardEyebrow">Process promise</span>
+                {PROCESS_PROMISE.map((item) => (
+                  <p key={item} className="cardText">{item}</p>
+                ))}
+              </div>
+
               <div className="pageActionRow">
-                <Button href="/service">See deliverables</Button>
-                <Button href="/contact" className={buttonStyles.buttonGhost}>
-                  Tell us what you need
+                <Button href="/contact">Start with the workflow</Button>
+                <Button href="/service" className={buttonStyles.buttonGhost}>
+                  See deliverables
                 </Button>
               </div>
             </div>
@@ -110,20 +124,27 @@ export default function ProcessPage() {
         <div className="pageContainer pageFlow">
           <div className="pageFlowIntro">
             <h2>
-              What happens, in order.
+              How the work moves forward.
             </h2>
 
             <p className="pageText">
-              This is how the work stays calm, scoped and understandable.
+              This is the delivery document view.
+              <br />
+              One stage at a time, with a clear output.
             </p>
           </div>
 
-          <div className={styles.timeline}>
+          <div className={styles.timelineList}>
             {STEPS.map((step) => (
-              <article key={step.number} className={`cardPanel cardPanelSolid ${styles.timelineItem}`}>
-                <span className="cardNumber">{step.number}</span>
-                <h3 className="cardTitle">{step.title}</h3>
-                <p className="cardText">{step.text}</p>
+              <article key={step.number} className={`cardPanel cardPanelSoft ${styles.timelineRow}`}>
+                <div className={styles.timelineMeta}>
+                  <span className="cardNumber">{step.number}</span>
+                  <span className="cardEyebrow">Stage</span>
+                </div>
+                <div className={styles.timelineContent}>
+                  <h3 className="cardTitle">{step.title}</h3>
+                  <p className="cardText">{step.text}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -192,11 +213,9 @@ export default function ProcessPage() {
         <div className="pageContainer pageCta">
           <div className="pageCtaContent">
             <h2>
-              If the main worry is
+              If delivery risk is the main blocker,
               <br />
-              how the work will run,
-              <br />
-              start here.
+              start with the workflow.
             </h2>
           </div>
 

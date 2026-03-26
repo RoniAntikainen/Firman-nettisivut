@@ -62,7 +62,7 @@ export default function PrivacyPage() {
             <article className="cardPanel cardPanelSoft">
               <h3 className="cardTitle">Controller and storage</h3>
               <p className="cardText">
-                Weboryn acts as the data controller for contact inquiries. Inquiry data is typically stored in email and project communication systems used to reply and continue the conversation.
+                Weboryn acts as the data controller for contact inquiries. Inquiry data is typically stored in email and project communication systems used to reply and continue the conversation. If transactional email delivery is used, the message may pass through that provider to reach our inbox.
               </p>
             </article>
 

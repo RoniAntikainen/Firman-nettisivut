@@ -12,6 +12,24 @@ const CONTACT_CHECKLIST = [
   "What is the most painful part right now?",
 ] as const;
 
+const CONTACT_STEPS = [
+  {
+    label: "01",
+    title: "Send the rough version",
+    text: "You do not need a polished brief to start the conversation.",
+  },
+  {
+    label: "02",
+    title: "We clarify the real bottleneck",
+    text: "If there is a fit, we point to the clearest next step fast.",
+  },
+  {
+    label: "03",
+    title: "You get a clean direction",
+    text: "Scope first, then a sensible next action instead of more noise.",
+  },
+] as const;
+
 export default function ContactPage() {
   const formRef = useRef<HTMLElement | null>(null);
   const [email, setEmail] = useState("");
@@ -20,6 +38,8 @@ export default function ContactPage() {
   const [preferredTimes, setPreferredTimes] = useState("");
   const [company, setCompany] = useState("");
   const [didSubmit, setDidSubmit] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useScrollFade(formRef);
 
@@ -39,11 +59,46 @@ export default function ContactPage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (company.trim()) {
       return;
     }
-    setDidSubmit(true);
-    window.location.href = mailtoHref;
+
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    void (async () => {
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            problem,
+            users,
+            preferredTimes,
+            company,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+
+        setDidSubmit(true);
+        setEmail("");
+        setProblem("");
+        setUsers("");
+        setPreferredTimes("");
+        setCompany("");
+      } catch {
+        setSubmitError("We could not send the form right now. Use the email fallback below.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    })();
   };
 
   return (
@@ -52,6 +107,7 @@ export default function ContactPage() {
         <div className="pageContainer pageHeroGrid pageHeroStart">
           <div className="pageHeroContent">
             <div className="pageIntro">
+              <span className="cardEyebrow">Contact and next step</span>
               <h1>
                 Tell us what feels
                 <br />
@@ -62,13 +118,19 @@ export default function ContactPage() {
                 A rough description is enough.
               </p>
 
+              <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureMd">
+                <span className="cardEyebrow">What happens next</span>
+                <p className="cardText">
+                  We reply within 24 hours on weekdays.
+                  <br />
+                  If there is a fit, we suggest the clearest next step.
+                </p>
+              </div>
+
               <div className="pageActionRow">
                 <Button href="#contact-form">Send inquiry</Button>
                 <Button href="/book" className={buttonStyles.buttonGhost}>
                   Book 15 min call
-                </Button>
-                <Button href="/service" className={buttonStyles.buttonGhost}>
-                  See deliverables
                 </Button>
               </div>
             </div>
@@ -77,8 +139,24 @@ export default function ContactPage() {
       </section>
 
       <section ref={formRef} className="sectionSurfaceFade">
-        <div className="pageContainer pageSplit pageSplitCenter">
-          <div className="pageIntro">
+        <div className="pageContainer pageFlow">
+          <div className="pageCheckpoint cardPanel cardPanelSoft cardPanelGapMd">
+            <div className="pageCheckpointCopy">
+              <span className="cardEyebrow">How this works</span>
+              <p className="cardValue">This page is for starting the conversation, not writing a proposal.</p>
+            </div>
+
+            <div className={styles.contactSteps}>
+              {CONTACT_STEPS.map((item) => (
+                <article key={item.label} className={styles.contactStep}>
+                  <span className="cardEyebrow">{item.label}</span>
+                  <p className="cardText">{item.title}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="pageFlowIntro">
             <h2>
               What to send.
             </h2>
@@ -90,7 +168,17 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="pageVisual">
+          <div className={styles.contactGrid}>
+            <div className={styles.contactGuide}>
+              {CONTACT_STEPS.map((item) => (
+                <article key={item.title} className="cardPanel cardPanelSoft cardPanelGapMd">
+                  <span className="cardEyebrow">{item.label}</span>
+                  <h3 className="cardTitle">{item.title}</h3>
+                  <p className="cardText">{item.text}</p>
+                </article>
+              ))}
+            </div>
+
             <form
               id="contact-form"
               className={`cardPanel cardPanelGradient cardPanelMeasureMd cardPanelGapLg ${styles.contactForm}`}
@@ -165,17 +253,21 @@ export default function ContactPage() {
               </p>
 
               <p className={styles.formNote}>
-                Submitting opens a prepared email with your answers. We reply within 24 hours on weekdays.
+                We send this directly to our inbox. If the form service is unavailable, use the email fallback below.
               </p>
 
               {didSubmit ? (
                 <p className={styles.formSuccess}>
-                  Thanks. If the email app did not open, send the same details to hello@weboryn.com.
+                  Thanks. We received your inquiry and reply within 24 hours on weekdays.
                 </p>
               ) : null}
 
+              {submitError ? (
+                <p className={styles.formError}>{submitError}</p>
+              ) : null}
+
               <div className="pageActionRow">
-                <Button type="submit">Send inquiry</Button>
+                <Button type="submit">{isSubmitting ? "Sending..." : "Send inquiry"}</Button>
               </div>
 
               <a className={styles.inlineLink} href={mailtoHref}>

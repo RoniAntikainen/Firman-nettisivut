@@ -100,6 +100,12 @@ const TEAM_CARDS = [
   },
 ] as const;
 
+const STUDIO_NOTES = [
+  "Founder-led from first message to handoff.",
+  "Small scope, direct communication, no unnecessary layers.",
+  "Built for teams that need one workflow to work properly.",
+] as const;
+
 export default function AboutUsPage() {
   const principlesRef = useRef<HTMLElement | null>(null);
   const fitRef = useRef<HTMLElement | null>(null);
@@ -113,11 +119,18 @@ export default function AboutUsPage() {
         <div className="pageContainer pageHeroGrid pageHeroStart">
           <div className="pageHeroContent">
             <div className="pageIntro">
+              <span className="cardEyebrow">Studio and trust</span>
               <h1>
                 We build the opposite
                 <br />
                 of overbuilt software.
               </h1>
+
+              <p className="pageHeroText">
+                This page is about who we are,
+                <br />
+                how we work and when we are the right fit.
+              </p>
 
               <div className="pageActionRow">
                 <Button href="/service">See what we build</Button>
@@ -133,7 +146,7 @@ export default function AboutUsPage() {
       <section ref={principlesRef} className="sectionSurfaceFade">
         <div className="pageContainer pageFlow">
           <div className="pageFlowIntro">
-            <h2>Why this approach works.</h2>
+            <h2>Why the studio works this way.</h2>
           </div>
 
           <div className="pageGrid3">
@@ -187,39 +200,56 @@ export default function AboutUsPage() {
       </section>
 
       <section className="sectionFadeDownTop">
-        <div className="pageContainer pageFlow">
-          <div className="pageFlowIntro">
+        <div className="pageContainer pageSplit pageSplitCenter">
+          <div className="pageIntro">
             <h2>
               Who builds this.
             </h2>
+
+            <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureMd">
+              <span className="cardEyebrow">Studio note</span>
+              {STUDIO_NOTES.map((item) => (
+                <p key={item} className="cardText">{item}</p>
+              ))}
+            </div>
           </div>
 
-          <div className="pageGrid3">
-            {WHO_WE_ARE.map((item) => (
-              <article key={item.title} className="cardPanel cardPanelSoft">
-                <h3 className="cardTitle">{item.title}</h3>
-                <p className="cardText">{item.text}</p>
-              </article>
-            ))}
+          <div className="pageVisual">
+            <div className="cardStack cardStackMeasure">
+              {WHO_WE_ARE.map((item) => (
+                <article key={item.title} className="cardPanel cardPanelSoft">
+                  <h3 className="cardTitle">{item.title}</h3>
+                  <p className="cardText">{item.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       <section className="sectionNoBg">
-        <div className="pageContainer pageFlow">
+        <div className="pageContainer pageSplit pageSplitCenter">
           <div className="pageFlowIntro">
             <h2>
               Team shape.
             </h2>
+
+            <p className="pageText">
+              This page is about how the studio works,
+              <br />
+              not what the final deliverable costs.
+            </p>
           </div>
 
-          <div className="pageGrid3">
-            {TEAM_CARDS.map((item) => (
-              <article key={item.title} className="cardPanel cardPanelSoft">
-                <h3 className="cardTitle">{item.title}</h3>
-                <p className="cardText">{item.text}</p>
-              </article>
-            ))}
+          <div className="pageVisual">
+            <div className="cardStack cardStackMeasure">
+              {TEAM_CARDS.map((item) => (
+                <article key={item.title} className="cardPanel cardPanelSoft">
+                  <h3 className="cardTitle">{item.title}</h3>
+                  <p className="cardText">{item.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>

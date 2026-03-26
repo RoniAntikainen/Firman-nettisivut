@@ -49,6 +49,12 @@ const TESTIMONIALS = [
   },
 ] as const;
 
+const CASE_SUMMARY = [
+  "Booking flow: 6 clicks -> 3 clicks",
+  "Client workflow: 3 tools -> 1 portal",
+  "Dashboard use: fewer repeated checks across the day",
+] as const;
+
 export default function CasesPage() {
   const casesRef = useRef<HTMLElement | null>(null);
   const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>("All");
@@ -66,6 +72,7 @@ export default function CasesPage() {
         <div className="pageContainer pageHeroGrid pageHeroStart">
           <div className="pageHeroContent">
             <div className="pageIntro">
+              <span className="cardEyebrow">Concrete results</span>
               <h1>
                 A few focused cases
                 <br />
@@ -86,6 +93,13 @@ export default function CasesPage() {
                   See services
                 </Button>
               </div>
+
+              <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureMd">
+                <span className="cardEyebrow">At a glance</span>
+                {CASE_SUMMARY.map((item) => (
+                  <p key={item} className="cardText">{item}</p>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -95,7 +109,7 @@ export default function CasesPage() {
         <div className="pageContainer pageFlow">
           <div className="pageFlowIntro">
             <h2>
-              Anonymized proof.
+              Results by use case.
             </h2>
           </div>
 
@@ -113,22 +127,28 @@ export default function CasesPage() {
             ))}
           </div>
 
-          <div className="pageGrid3">
+          <div className={styles.casesList}>
             {visibleCases.map((item) => (
-              <article key={item.client} className="cardPanel cardPanelSoft cardPanelGapMd">
-                <span className="cardEyebrow">{item.type} / {item.client}</span>
-                <h3 className="cardTitle">{item.metric}</h3>
-                <p className="cardText">Problem: {item.problem}</p>
-                <p className="cardText">Change: {item.change}</p>
-                <p className="cardText">Result: {item.effect}</p>
-                <p className="cardText">{item.impact}</p>
-                <div className="cardPanel cardPanelSoft">
-                  <span className="cardEyebrow">Flow sketch</span>
-                  <p className="cardText">
-                    Before: scattered steps
-                    <br />
-                    After: one route, one owner, one next action
-                  </p>
+              <article key={item.client} className={`cardPanel cardPanelSoft ${styles.caseCard}`}>
+                <div className={styles.caseMeta}>
+                  <span className="cardEyebrow">{item.type} / {item.client}</span>
+                  <h3 className="cardTitle">{item.metric}</h3>
+                  <p className="cardText">{item.effect}</p>
+                </div>
+
+                <div className={styles.caseDetails}>
+                  <p className="cardText">Problem: {item.problem}</p>
+                  <p className="cardText">Change: {item.change}</p>
+                  <p className="cardText">{item.impact}</p>
+
+                  <div className="cardPanel cardPanelSoft">
+                    <span className="cardEyebrow">Flow sketch</span>
+                    <p className="cardText">
+                      Before: scattered steps
+                      <br />
+                      After: one route, one owner, one next action
+                    </p>
+                  </div>
                 </div>
               </article>
             ))}

@@ -26,6 +26,47 @@
   flex-direction: column;
 }
 
+.pageHeroAnchor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 18px;
+  width: 100%;
+}
+
+.pageHeroAnchorTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.pageHeroAnchorMarks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.pageHeroAnchorMark {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, white 56%, transparent);
+  color: var(--color-text-secondary);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.pageHeroAnchorBottom {
+  width: min(100%, 34rem);
+}
+
 .pageSplit {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
@@ -106,6 +147,21 @@
   gap: 12px;
 }
 
+.pageCheckpoint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.pageCheckpointCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  max-width: 44rem;
+}
+
 .pageText {
   margin: 0;
   max-width: 42ch;
@@ -166,6 +222,18 @@
   }
 
   .pageHeroMediaAlignStart {
+    align-items: flex-start;
+  }
+
+  .pageHeroAnchor,
+  .pageHeroAnchorTop,
+  .pageHeroAnchorMarks {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .pageCheckpoint {
+    flex-direction: column;
     align-items: flex-start;
   }
 

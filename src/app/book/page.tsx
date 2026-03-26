@@ -20,6 +20,8 @@ export default function BookPage() {
   const [slot, setSlot] = useState<TimeSlot>(TIME_SLOTS[0]);
   const [note, setNote] = useState("");
   const [didSubmit, setDidSubmit] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const mailtoHref = useMemo(() => {
     const subject = encodeURIComponent("15 minute call");
@@ -32,8 +34,37 @@ export default function BookPage() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setDidSubmit(true);
-    window.location.href = mailtoHref;
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    void (async () => {
+      try {
+        const response = await fetch("/api/book", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            slot,
+            note,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+
+        setDidSubmit(true);
+        setEmail("");
+        setSlot(TIME_SLOTS[0]);
+        setNote("");
+      } catch {
+        setSubmitError("We could not send the call request right now. Use the email fallback below.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    })();
   };
 
   return (
@@ -117,16 +148,24 @@ export default function BookPage() {
 
               {didSubmit ? (
                 <p className={styles.success}>
-                  Thanks. If your email app did not open, send the same details to hello@weboryn.com.
+                  Thanks. We received your call request and confirm by email within 24 hours on weekdays.
                 </p>
               ) : null}
 
+              {submitError ? (
+                <p className={styles.error}>{submitError}</p>
+              ) : null}
+
               <div className="pageActionRow">
-                <Button type="submit">Request call</Button>
+                <Button type="submit">{isSubmitting ? "Sending..." : "Request call"}</Button>
                 <Button href="/contact" className={buttonStyles.buttonGhost}>
                   Send inquiry instead
                 </Button>
               </div>
+
+              <a className={styles.inlineLink} href={mailtoHref}>
+                Open email app instead
+              </a>
             </form>
           </div>
         </div>
