@@ -2,167 +2,299 @@
 
 import { useRef } from "react";
 import Button from "@/components/buttons/button";
+import buttonStyles from "@/components/buttons/button.module.css";
 import { useScrollFade } from "@/hooks/fade/useScrollFade";
 
-export default function AboutUsPage() {
-  const heroRef = useRef<HTMLElement | null>(null);
-  const whoItFitsRef = useRef<HTMLElement | null>(null);
+const PRINCIPLES = [
+  {
+    title: "Why this exists",
+    lines: [
+      "We don't like complex systems.",
+      "Most tools are overbuilt.",
+      "We build the opposite.",
+    ],
+  },
+  {
+    title: "How we work",
+    lines: [
+      "Small scope first.",
+      "Working version early.",
+      "Clean handoff at the end.",
+    ],
+  },
+  {
+    title: "Why people trust us",
+    lines: [
+      "We cut complexity.",
+      "We show progress early.",
+      "We do not hide behind process theatre.",
+    ],
+  },
+] as const;
 
-  // 🔥 molemmat käyttää samaa hookia
-  useScrollFade(heroRef);
-  useScrollFade(whoItFitsRef);
+const WHAT_WE_DO_NOT_DO = [
+  "use templates",
+  "overbuild features",
+  "add unnecessary layers",
+] as const;
+
+const SIGNALS = [
+  {
+    label: "What clients usually have",
+    value: "Too many tools for one job",
+    note: "Work gets split across tabs, messages and manual updates.",
+  },
+  {
+    label: "What they usually want",
+    value: "One cleaner way to do it",
+    note: "One workflow, one view and one next step that makes sense.",
+  },
+] as const;
+
+const WHO_WE_ARE = [
+  {
+    title: "Founder-led studio",
+    text: "Weboryn is a new studio built around one idea: fewer moving parts, clearer workflows and calmer delivery.",
+  },
+  {
+    title: "How we work",
+    text: "You work directly with the person shaping the scope, the product direction and the build.",
+  },
+  {
+    title: "What we build",
+    text: "Mostly React, Next.js and focused interfaces for portals, internal tools and key customer flows.",
+  },
+] as const;
+
+const BEST_FIT = [
+  "One owner can define the workflow clearly.",
+  "The team can point to one measurable problem first.",
+  "The goal is a cleaner system, not a giant rebuild.",
+] as const;
+
+const NOT_FOR_US = [
+  "you need a huge multi-team platform from day one",
+  "the workflow is still too unclear to scope",
+  "you want maximum feature count before first delivery",
+] as const;
+
+const WORKING_EXPECTATIONS = [
+  "Response rhythm: usually within 24 hours on weekdays.",
+  "Check-ins: lightweight weekly updates or milestone reviews depending on scope.",
+  "Decisions: one owner keeps the workflow and scope moving.",
+  "Handoff: final structure, editable components and next-step guidance.",
+] as const;
+
+const TEAM_CARDS = [
+  {
+    title: "Product direction",
+    text: "Scope, structure and the core workflow are shaped before build expands.",
+  },
+  {
+    title: "Frontend build",
+    text: "Interfaces are built to be usable, editable and ready to hand off cleanly.",
+  },
+  {
+    title: "Delivery style",
+    text: "Small team, direct communication and fewer layers between decision and execution.",
+  },
+] as const;
+
+export default function AboutUsPage() {
+  const principlesRef = useRef<HTMLElement | null>(null);
+  const fitRef = useRef<HTMLElement | null>(null);
+
+  useScrollFade(principlesRef);
+  useScrollFade(fitRef);
 
   return (
     <main>
       <section className="sectionNoBg sectionHero">
         <div className="pageContainer pageHeroGrid pageHeroStart">
           <div className="pageHeroContent">
-            <h2>
-              We build systems that are designed to actually work in real use.
-            </h2>
-          </div>
-        </div>
-      </section>
+            <div className="pageIntro">
+              <h1>
+                We build the opposite
+                <br />
+                of overbuilt software.
+              </h1>
 
-      <section ref={heroRef} className="sectionSurfaceFade">
-        <div className="pageContainer pageSplit">
-          <div className="pageIntro">
-            <h2>
-              We build tools, systems and workflows that make work feel simpler.
-            </h2>
-
-            <p className="pageText pageTextNarrow">
-              Our work is focused on helping teams move away from fragmented
-              workflows, repetitive manual work and systems that slow everything
-              down.
-            </p>
-          </div>
-
-          <div className="pageVisual">
-            <div className="cardStack cardStackMeasure">
-              <article className="cardPanel cardPanelSoft cardPanelTinted">
-                <h3 className="cardTitle">Internal tools</h3>
-                <p className="cardText">
-                  Dashboards, admin tools and workflows that replace manual work
-                  with one clearer system.
-                </p>
-              </article>
-
-              <article className="cardPanel cardPanelSoft cardPanelTinted">
-                <h3 className="cardTitle">Website functionality</h3>
-                <p className="cardText">
-                  Useful features, flows and integrations that turn a website
-                  into something more practical.
-                </p>
-              </article>
-
-              <article className="cardPanel cardPanelSoft cardPanelTinted">
-                <h3 className="cardTitle">System improvements</h3>
-                <p className="cardText">
-                  Reworking slow, messy or limiting setups so they support real
-                  use better.
-                </p>
-              </article>
+              <div className="pageActionRow">
+                <Button href="/service">See what we build</Button>
+                <Button href="/contact" className={buttonStyles.buttonGhost}>
+                  Tell us what is not working
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section>
+      <section ref={principlesRef} className="sectionSurfaceFade">
         <div className="pageContainer pageFlow">
           <div className="pageFlowIntro">
-            <h2>
-              Most systems are harder to use than they should be.
-            </h2>
-
-            <p className="pageText pageTextNarrow">
-              Too often, digital tools are built around assumptions instead of
-              real workflows. They become slow, unclear or overloaded with
-              features that add little value.
-            </p>
+            <h2>Why this approach works.</h2>
           </div>
 
           <div className="pageGrid3">
-            <article className="cardPanel cardPanelSolid">
-              <span className="cardNumber">01</span>
-              <h3 className="cardTitle">Clarity over clutter</h3>
-              <p className="cardText">
-                We prefer simple structures, clear interfaces and focused flows
-                over unnecessary complexity.
-              </p>
-            </article>
-
-            <article className="cardPanel cardPanelSolid">
-              <span className="cardNumber">02</span>
-              <h3 className="cardTitle">Real use over theory</h3>
-              <p className="cardText">
-                A system should work in everyday use, not just look good in a
-                presentation or planning document.
-              </p>
-            </article>
-
-            <article className="cardPanel cardPanelSolid">
-              <span className="cardNumber">03</span>
-              <h3 className="cardTitle">Structure that scales</h3>
-              <p className="cardText">
-                Good systems are easier to maintain, improve and grow when the
-                foundation is built properly.
-              </p>
-            </article>
+            {PRINCIPLES.map((item) => (
+              <article key={item.title} className="cardPanel cardPanelSolid">
+                <h3 className="cardTitle">{item.title}</h3>
+                {item.lines.map((line) => (
+                  <p key={line} className="cardText">
+                    {line}
+                  </p>
+                ))}
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section ref={whoItFitsRef} className="sectionFadeDownTop">
-        <div className="pageContainer pageSplit">
+      <section ref={fitRef}>
+        <div className="pageContainer pageSplit pageSplitCenter">
           <div className="pageIntro">
             <h2>
-              We work best with teams that want better structure.
+              What we do not do.
             </h2>
 
-            <p className="pageText pageTextNarrow">
-              The best fit is usually a team that has outgrown scattered tools
-              and wants a system that feels more natural to use.
-            </p>
+            <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureSm">
+              <ul className="cardList">
+                {WHAT_WE_DO_NOT_DO.map((item) => (
+                  <li key={item} className="cardListItem">
+                    <span className="cardMark" aria-hidden="true">
+                      /
+                    </span>
+                    <span className="cardText">We don&apos;t {item}.</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           <div className="pageVisual">
             <div className="cardStack cardStackMeasure">
-              <article className="cardPanel cardPanelSoft cardPanelTinted">
-                <h3 className="cardTitle">Too many manual steps</h3>
-                <p className="cardText">
-                  Repetitive work, copied data and unnecessary admin slow down
-                  everyday progress.
-                </p>
-              </article>
-
-              <article className="cardPanel cardPanelSoft cardPanelTinted">
-                <h3 className="cardTitle">Outgrown spreadsheets</h3>
-                <p className="cardText">
-                  What worked earlier no longer supports the way the team
-                  actually operates now.
-                </p>
-              </article>
+              {SIGNALS.map((item) => (
+                <article key={item.label} className="cardPanel cardPanelSoft">
+                  <span className="cardEyebrow">{item.label}</span>
+                  <p className="cardValue">{item.value}</p>
+                  <p className="cardText">{item.note}</p>
+                </article>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="sectionNoBg sectionCta">
+      <section className="sectionFadeDownTop">
+        <div className="pageContainer pageFlow">
+          <div className="pageFlowIntro">
+            <h2>
+              Who builds this.
+            </h2>
+          </div>
+
+          <div className="pageGrid3">
+            {WHO_WE_ARE.map((item) => (
+              <article key={item.title} className="cardPanel cardPanelSoft">
+                <h3 className="cardTitle">{item.title}</h3>
+                <p className="cardText">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sectionNoBg">
+        <div className="pageContainer pageFlow">
+          <div className="pageFlowIntro">
+            <h2>
+              Team shape.
+            </h2>
+          </div>
+
+          <div className="pageGrid3">
+            {TEAM_CARDS.map((item) => (
+              <article key={item.title} className="cardPanel cardPanelSoft">
+                <h3 className="cardTitle">{item.title}</h3>
+                <p className="cardText">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sectionSurfaceFade">
+        <div className="pageContainer pageSplit pageSplitCenter">
+          <div className="pageIntro">
+            <h2>
+              Best fit.
+            </h2>
+
+            <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureSm">
+              <ul className="cardList">
+                {BEST_FIT.map((item) => (
+                  <li key={item} className="cardListItem">
+                    <span className="cardMark" aria-hidden="true">
+                      /
+                    </span>
+                    <span className="cardText">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="pageVisual">
+            <div className="cardPanel cardPanelSoft cardPanelGapMd cardPanelMeasureSm">
+              <span className="cardEyebrow">When not to hire us</span>
+              <ul className="cardList">
+                {NOT_FOR_US.map((item) => (
+                  <li key={item} className="cardListItem">
+                    <span className="cardMark" aria-hidden="true">
+                      /
+                    </span>
+                    <span className="cardText">Not a fit if {item}.</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="sectionFadeDownTop">
+        <div className="pageContainer pageFlow">
+          <div className="pageFlowIntro">
+            <h2>
+              What to expect working with us.
+            </h2>
+          </div>
+
+          <div className="pageGrid3">
+            {WORKING_EXPECTATIONS.map((item) => (
+              <article key={item} className="cardPanel cardPanelSoft">
+                <p className="cardText">{item}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="sectionFadeDownTop sectionCta">
         <div className="pageContainer pageCta">
           <div className="pageCtaContent">
             <h2>
-              Ready to make your systems simpler?
+              Trust usually starts
+              <br />
+              with one real problem.
             </h2>
-
-            <p className="pageText pageTextNarrow">
-              Let&apos;s take a look at what&apos;s slowing things down and what
-              should be built instead.
-            </p>
           </div>
 
           <div className="pageCtaActions">
-            <Button href="/contact">Let&apos;s talk</Button>
+            <div className="pageActionRow">
+              <Button href="/contact">Tell us what is not working</Button>
+            </div>
           </div>
         </div>
       </section>

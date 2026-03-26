@@ -99,6 +99,13 @@
   width: 100%;
 }
 
+.pageActionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
 .pageText {
   margin: 0;
   max-width: 42ch;
@@ -238,6 +245,10 @@
 
   .pageCtaActions {
     justify-content: flex-start;
+  }
+
+  .pageActionRow {
+    width: 100%;
   }
 }
 

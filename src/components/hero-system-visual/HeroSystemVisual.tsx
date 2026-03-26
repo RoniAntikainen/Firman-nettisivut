@@ -40,7 +40,18 @@ function clamp(value: number, min: number, max: number) {
 
 
 const CARD_EDGE_INSET_PX = 16;
-const PREVIEW_READY_SCALE = 1.03;
+const PREVIEW_READY_SCALE = 1.015;
+const REQUEST_ROW_REVEAL_MS = 320;
+const REQUEST_SCOPE_DELAY_MS = 2240;
+const SCOPE_DURATION_MS = 760;
+const STRUCTURE_DURATION_MS = 920;
+const BUILD_LINE_2_DELAY_MS = 880;
+const BUILD_LINE_3_DELAY_MS = 1820;
+const BUILD_LINE_4_DELAY_MS = 2680;
+const BUILD_DURATION_MS = 3400;
+const POLISH_DURATION_MS = 1240;
+const READY_DURATION_MS = 2240;
+const HANDOFF_DURATION_MS = 520;
 
 function clampCardLeft(left: number, rootWidth: number, measuredCardWidth: number, scale = 1) {
   const safeCardWidth = measuredCardWidth * scale;
@@ -50,6 +61,26 @@ function clampCardLeft(left: number, rootWidth: number, measuredCardWidth: numbe
 }
 
 const READY_CURSOR_SYNC_DURATION_MS = 520;
+
+function getBuildStepForPhase(phase: Phase) {
+  switch (phase) {
+    case "scope":
+      return 2;
+    case "structure":
+      return 3;
+    case "build":
+      return 4;
+    case "polish":
+      return 5;
+    case "ready":
+    case "handoff":
+      return 6;
+    case "request":
+      return 1;
+    default:
+      return 0;
+  }
+}
 
 export default function HeroSystemVisual() {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -67,12 +98,12 @@ export default function HeroSystemVisual() {
     editor: 344,
     preview: 464,
   });
+  const [sceneWidth, setSceneWidth] = useState(0);
 
-  const [phase, setPhase] = useState<Phase>("intro");
+  const [phase, setPhase] = useState<Phase>("request");
   const [itemIndex, setItemIndex] = useState(0);
   const [visibleRequestRows, setVisibleRequestRows] = useState(0);
   const [visibleCodeLines, setVisibleCodeLines] = useState(0);
-  const [activeBuildStep, setActiveBuildStep] = useState(0);
   const [layoutSequence, setLayoutSequence] = useState<Layout[]>([]);
   const [activeLayoutIndex, setActiveLayoutIndex] = useState(0);
   const [cardSlotOrder, setCardSlotOrder] = useState<CardSlotOrder>(() => getRandomCardSlotOrder());
@@ -82,21 +113,20 @@ export default function HeroSystemVisual() {
   const requestPosition = currentLayout ? currentLayout[cardSlotOrder.request] : null;
   const editorPosition = currentLayout ? currentLayout[cardSlotOrder.editor] : null;
   const previewPosition = currentLayout ? currentLayout[cardSlotOrder.preview] : null;
-  const rootWidth = sceneRef.current?.clientWidth ?? rootRef.current?.clientWidth ?? 0;
   const requestMeasuredWidth = measuredCardWidths.request;
   const editorMeasuredWidth = measuredCardWidths.editor;
   const previewMeasuredWidth = measuredCardWidths.preview;
 
   const requestLeft = requestPosition
-    ? clampCardLeft(requestPosition.left, rootWidth, requestMeasuredWidth)
+    ? clampCardLeft(requestPosition.left, sceneWidth, requestMeasuredWidth)
     : 0;
   const editorLeft = editorPosition
-    ? clampCardLeft(editorPosition.left, rootWidth, editorMeasuredWidth)
+    ? clampCardLeft(editorPosition.left, sceneWidth, editorMeasuredWidth)
     : 0;
   const previewLeft = previewPosition
     ? clampCardLeft(
         previewPosition.left,
-        rootWidth,
+        sceneWidth,
         previewMeasuredWidth,
         phase === "ready" ? PREVIEW_READY_SCALE : 1
       )
@@ -111,6 +141,7 @@ export default function HeroSystemVisual() {
 
   const previewPillLabel =
     phase === "polish" ? "Final preview" : "Ready to launch";
+  const activeBuildStep = getBuildStepForPhase(phase);
 
   const refreshLayoutSequence = useCallback((pickRandomStart: boolean) => {
     const root = rootRef.current;
@@ -174,16 +205,15 @@ export default function HeroSystemVisual() {
   }, []);
 
   useEffect(() => {
-    refreshLayoutSequence(true);
-    setCardSlotOrder(getRandomCardSlotOrder());
-
-    const onResize = () => {
-      refreshLayoutSequence(false);
-      syncCursorTarget();
-
+    const updateMeasurements = () => {
+      const nextSceneWidth = sceneRef.current?.clientWidth ?? rootRef.current?.clientWidth ?? 0;
       const nextRequestWidth = requestCardRef.current?.offsetWidth ?? 304;
       const nextEditorWidth = editorCardRef.current?.offsetWidth ?? 344;
       const nextPreviewWidth = previewCardRef.current?.offsetWidth ?? 464;
+
+      setSceneWidth((currentWidth) =>
+        currentWidth === nextSceneWidth ? currentWidth : nextSceneWidth
+      );
 
       setMeasuredCardWidths((currentWidths) => {
         if (
@@ -202,12 +232,21 @@ export default function HeroSystemVisual() {
       });
     };
 
+    refreshLayoutSequence(true);
+    updateMeasurements();
+
+    const onResize = () => {
+      refreshLayoutSequence(false);
+      syncCursorTarget();
+      updateMeasurements();
+    };
+
     window.addEventListener("resize", onResize);
 
     return () => {
       window.removeEventListener("resize", onResize);
     };
-  }, [refreshLayoutSequence]);
+  }, [refreshLayoutSequence, syncCursorTarget]);
 
   useEffect(() => {
     syncCursorTarget();
@@ -271,28 +310,14 @@ export default function HeroSystemVisual() {
   }, [phase, syncCursorTarget]);
 
   useEffect(() => {
-    if (phase !== "intro") return;
-
-    const timeout = window.setTimeout(() => {
-      setPhase("request");
-    }, 1800);
-
-    return () => window.clearTimeout(timeout);
-  }, [phase]);
-
-  useEffect(() => {
     if (phase !== "request") return;
 
-    setVisibleRequestRows(0);
-    setVisibleCodeLines(0);
-    setActiveBuildStep(1);
-
     const timers = [
-      window.setTimeout(() => setVisibleRequestRows(1), 220),
-      window.setTimeout(() => setVisibleRequestRows(2), 620),
-      window.setTimeout(() => setVisibleRequestRows(3), 1020),
-      window.setTimeout(() => setVisibleRequestRows(4), 1420),
-      window.setTimeout(() => setPhase("scope"), 2650),
+      window.setTimeout(() => setVisibleRequestRows(1), 0),
+      window.setTimeout(() => setVisibleRequestRows(2), REQUEST_ROW_REVEAL_MS),
+      window.setTimeout(() => setVisibleRequestRows(3), REQUEST_ROW_REVEAL_MS * 2),
+      window.setTimeout(() => setVisibleRequestRows(4), REQUEST_ROW_REVEAL_MS * 3),
+      window.setTimeout(() => setPhase("scope"), REQUEST_SCOPE_DELAY_MS),
     ];
 
     return () => {
@@ -303,11 +328,10 @@ export default function HeroSystemVisual() {
   useEffect(() => {
     if (phase !== "scope") return;
 
-    setActiveBuildStep(2);
-
     const timeout = window.setTimeout(() => {
+      setVisibleCodeLines(1);
       setPhase("structure");
-    }, 900);
+    }, SCOPE_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
   }, [phase]);
@@ -315,12 +339,9 @@ export default function HeroSystemVisual() {
   useEffect(() => {
     if (phase !== "structure") return;
 
-    setActiveBuildStep(3);
-    setVisibleCodeLines(1);
-
     const timeout = window.setTimeout(() => {
       setPhase("build");
-    }, 1100);
+    }, STRUCTURE_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
   }, [phase]);
@@ -328,13 +349,11 @@ export default function HeroSystemVisual() {
   useEffect(() => {
     if (phase !== "build") return;
 
-    setActiveBuildStep(4);
-
     const timers = [
-      window.setTimeout(() => setVisibleCodeLines(2), 700),
-      window.setTimeout(() => setVisibleCodeLines(3), 1700),
-      window.setTimeout(() => setVisibleCodeLines(4), 2500),
-      window.setTimeout(() => setPhase("polish"), 3600),
+      window.setTimeout(() => setVisibleCodeLines(2), BUILD_LINE_2_DELAY_MS),
+      window.setTimeout(() => setVisibleCodeLines(3), BUILD_LINE_3_DELAY_MS),
+      window.setTimeout(() => setVisibleCodeLines(4), BUILD_LINE_4_DELAY_MS),
+      window.setTimeout(() => setPhase("polish"), BUILD_DURATION_MS),
     ];
 
     return () => {
@@ -345,11 +364,9 @@ export default function HeroSystemVisual() {
   useEffect(() => {
     if (phase !== "polish") return;
 
-    setActiveBuildStep(5);
-
     const timeout = window.setTimeout(() => {
       setPhase("ready");
-    }, 1600);
+    }, POLISH_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
   }, [phase]);
@@ -357,11 +374,9 @@ export default function HeroSystemVisual() {
   useEffect(() => {
     if (phase !== "ready") return;
 
-    setActiveBuildStep(6);
-
     const timeout = window.setTimeout(() => {
       setPhase("handoff");
-    }, 2800);
+    }, READY_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
   }, [phase]);
@@ -387,9 +402,8 @@ export default function HeroSystemVisual() {
       setItemIndex((currentItemIndex) => (currentItemIndex + 1) % PROCESS_ITEMS.length);
       setVisibleRequestRows(0);
       setVisibleCodeLines(0);
-      setActiveBuildStep(0);
       setPhase("request");
-    }, 700);
+    }, HANDOFF_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
   }, [phase, layoutSequence.length]);

@@ -22,6 +22,29 @@
     box-shadow 180ms ease;
 }
 
+.buttonGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 148px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 34%, transparent);
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text-primary) 88%, transparent);
+  text-decoration: none;
+  font-size: var(--text-label-md-size);
+  font-weight: 500;
+  line-height: var(--text-label-md-line-height);
+  letter-spacing: var(--letter-spacing-tight);
+  box-shadow: none;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
 .button:hover {
   transform: translateY(-1px);
   background: color-mix(in srgb, var(--color-text-primary) 92%, white);
@@ -37,12 +60,34 @@
     0 0 0 6px color-mix(in srgb, var(--color-text-primary) 16%, transparent);
 }
 
-.button:active {
+.buttonGhost:hover {
+  background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+  border-color: color-mix(in srgb, var(--color-text-primary) 42%, transparent);
+  color: var(--color-text-primary);
+}
+
+.buttonGhost:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--color-surface-primary) 88%, transparent),
+    0 0 0 6px color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+}
+
+.button:active,
+.buttonGhost:active {
   transform: translateY(0);
 }
 
+.buttonGhost:active {
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-text-primary) 46%, transparent);
+  color: var(--color-text-primary);
+  box-shadow: none;
+}
+
 @media (max-width: 768px) {
-  .button {
+  .button,
+  .buttonGhost {
     min-width: 148px;
     min-height: 50px;
     padding: 0 20px;
@@ -50,14 +95,16 @@
 }
 
 @media (max-width: 640px) {
-  .button {
+  .button,
+  .buttonGhost {
     width: 100%;
     max-width: 240px;
   }
 }
 
 @media (max-width: 380px) {
-  .button {
+  .button,
+  .buttonGhost {
     max-width: none;
     min-width: 0;
   }

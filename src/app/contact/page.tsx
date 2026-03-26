@@ -1,140 +1,187 @@
 "use client";
 
-import { useRef } from "react";
+import { FormEvent, useMemo, useRef, useState } from "react";
 import Button from "@/components/buttons/button";
+import buttonStyles from "@/components/buttons/button.module.css";
+import styles from "./page.module.css";
 import { useScrollFade } from "@/hooks/fade/useScrollFade";
 
-const CONTACT_OPTIONS = [
-  {
-    label: "Email",
-    value: "hello@yourcompany.com",
-    href: "mailto:hello@yourcompany.com",
-    note: "The easiest way to start a conversation about your project or workflow.",
-  },
-  {
-    label: "Location",
-    value: "Helsinki, Finland",
-    href: undefined,
-    note: "Remote-friendly work with room for more focused collaboration when needed.",
-  },
-] as const;
-
-const START_POINTS = [
-  "What is currently slowing the team down?",
-  "Which tasks still depend on manual work or workarounds?",
-  "What kind of system, tool or functionality would help most right now?",
-] as const;
-
-const EXPECTATIONS = [
-  {
-    title: "A practical first conversation",
-    text: "We start by understanding the current setup, what is not working and where the biggest friction actually is.",
-  },
-  {
-    title: "Clear next steps",
-    text: "If there is a good fit, the next step is to define what should be improved, built or simplified first.",
-  },
-  {
-    title: "Focused scope",
-    text: "The aim is to avoid vague project sprawl and move toward one useful direction with a clear purpose.",
-  },
+const CONTACT_CHECKLIST = [
+  "What needs to work better?",
+  "Who uses it today?",
+  "What is the most painful part right now?",
 ] as const;
 
 export default function ContactPage() {
-  const optionsRef = useRef<HTMLElement | null>(null);
-  const expectationsRef = useRef<HTMLElement | null>(null);
+  const formRef = useRef<HTMLElement | null>(null);
+  const [email, setEmail] = useState("");
+  const [problem, setProblem] = useState("");
+  const [users, setUsers] = useState("");
+  const [preferredTimes, setPreferredTimes] = useState("");
+  const [company, setCompany] = useState("");
+  const [didSubmit, setDidSubmit] = useState(false);
 
-  useScrollFade(optionsRef);
-  useScrollFade(expectationsRef);
+  useScrollFade(formRef);
+
+  const mailtoHref = useMemo(() => {
+    const lines = [
+      `Email: ${email || "-"}`,
+      `What needs to work better: ${problem || "-"}`,
+      `Who uses it today: ${users || "-"}`,
+      `Preferred times: ${preferredTimes || "-"}`,
+    ];
+
+    const subject = encodeURIComponent("Project inquiry");
+    const body = encodeURIComponent(lines.join("\n"));
+
+    return `mailto:hello@weboryn.com?subject=${subject}&body=${body}`;
+  }, [email, problem, users, preferredTimes]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (company.trim()) {
+      return;
+    }
+    setDidSubmit(true);
+    window.location.href = mailtoHref;
+  };
 
   return (
     <main>
       <section className="sectionNoBg sectionHero">
-        <div className="pageContainer pageHeroGrid">
+        <div className="pageContainer pageHeroGrid pageHeroStart">
           <div className="pageHeroContent">
-            <h2>
-              Let&apos;s talk about what&apos;s not working and what should be
-              built instead.
-            </h2>
+            <div className="pageIntro">
+              <h1>
+                Tell us what feels
+                <br />
+                messy right now.
+              </h1>
+
+              <p className="pageHeroText">
+                A rough description is enough.
+              </p>
+
+              <div className="pageActionRow">
+                <Button href="#contact-form">Send inquiry</Button>
+                <Button href="/book" className={buttonStyles.buttonGhost}>
+                  Book 15 min call
+                </Button>
+                <Button href="/service" className={buttonStyles.buttonGhost}>
+                  See deliverables
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section
-        ref={optionsRef}
-        className="sectionSurfaceFade"
-      >
-        <div className="pageContainer pageSplit">
+      <section ref={formRef} className="sectionSurfaceFade">
+        <div className="pageContainer pageSplit pageSplitCenter">
           <div className="pageIntro">
-            <h2>Contact details and a clear way to start.</h2>
+            <h2>
+              What to send.
+            </h2>
 
             <p className="pageText">
-              You do not need a polished plan before reaching out. A short
-              message about the problem, the team and the current setup is
-              enough to get the conversation moving.
+              Keep it short.
+              <br />
+              These three things are enough.
             </p>
           </div>
 
-          <div className="cardStack">
-            {CONTACT_OPTIONS.map((item) => (
-              <article key={item.label} className="cardPanel cardPanelSoft">
-                <span className="cardEyebrow">{item.label}</span>
-                {item.href ? (
-                  <a href={item.href} className="cardValue">
-                    {item.value}
-                  </a>
-                ) : (
-                  <p className="cardValue">{item.value}</p>
-                )}
-                <p className="cardText">{item.note}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+          <div className="pageVisual">
+            <form
+              id="contact-form"
+              className={`cardPanel cardPanelGradient cardPanelMeasureMd cardPanelGapLg ${styles.contactForm}`}
+              onSubmit={handleSubmit}
+            >
+              <span className="cardEyebrow">Email</span>
+              <p className="cardValue">hello@weboryn.com</p>
 
-      <section
-        ref={expectationsRef}
-        className="sectionFadeDownTop"
-      >
-        <div className="pageContainer pageFlow">
-          <div className="pageFlowIntro">
-            <h2>What happens after you get in touch.</h2>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>Your email</span>
+                <input
+                  className={styles.fieldInput}
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="name@company.com"
+                  required
+                />
+              </label>
 
-            <p className="pageText">
-              The first step is usually a straightforward discussion about the
-              current situation, the friction points and the most useful next
-              move.
-            </p>
-          </div>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>What needs to work better?</span>
+                <textarea
+                  className={`${styles.fieldInput} ${styles.fieldTextarea}`}
+                  name="problem"
+                  value={problem}
+                  onChange={(event) => setProblem(event.target.value)}
+                  placeholder={CONTACT_CHECKLIST[0]}
+                  required
+                />
+              </label>
 
-          <div className="pageGrid3">
-            {EXPECTATIONS.map((item, index) => (
-              <article key={item.title} className="cardPanel cardPanelSolid">
-                <span className="cardNumber">
-                  0{index + 1}
-                </span>
-                <h3 className="cardTitle">{item.title}</h3>
-                <p className="cardText">{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>Who uses it today?</span>
+                <input
+                  className={styles.fieldInput}
+                  type="text"
+                  name="users"
+                  value={users}
+                  onChange={(event) => setUsers(event.target.value)}
+                  placeholder={CONTACT_CHECKLIST[1]}
+                  required
+                />
+              </label>
 
-      <section className="sectionNoBg sectionCta">
-        <div className="pageContainer pageCta">
-          <div className="pageCtaContent">
-            <h2>Want to review the services first?</h2>
+              <label className={styles.field}>
+                <span className={styles.fieldLabel}>Preferred times for a 15 min call (optional)</span>
+                <input
+                  className={styles.fieldInput}
+                  type="text"
+                  name="preferred_times"
+                  value={preferredTimes}
+                  onChange={(event) => setPreferredTimes(event.target.value)}
+                  placeholder="Tue 10:00 EET / Thu 14:00 CET / Fri 09:00 GMT"
+                />
+              </label>
 
-            <p className="pageText">
-              If you want a clearer picture of what we build before reaching
-              out, you can look through the service page first.
-            </p>
-          </div>
+              <label className={styles.honeypot} aria-hidden="true">
+                <span>Company</span>
+                <input
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={company}
+                  onChange={(event) => setCompany(event.target.value)}
+                />
+              </label>
 
-          <div className="pageCtaActions">
-            <Button href="/service">See services</Button>
+              <p className="cardText">
+                We reply within 24 hours on weekdays.
+              </p>
+
+              <p className={styles.formNote}>
+                Submitting opens a prepared email with your answers. We reply within 24 hours on weekdays.
+              </p>
+
+              {didSubmit ? (
+                <p className={styles.formSuccess}>
+                  Thanks. If the email app did not open, send the same details to hello@weboryn.com.
+                </p>
+              ) : null}
+
+              <div className="pageActionRow">
+                <Button type="submit">Send inquiry</Button>
+              </div>
+
+              <a className={styles.inlineLink} href={mailtoHref}>
+                Open email app instead
+              </a>
+            </form>
           </div>
         </div>
       </section>

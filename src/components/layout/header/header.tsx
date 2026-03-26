@@ -18,31 +18,40 @@ const PRIMARY_NAV_ITEMS = [
     href: "/service",
     label: "Services",
   },
+  {
+    href: "/process",
+    label: "Process",
+  },
+  {
+    href: "/cases",
+    label: "Cases",
+  },
+  {
+    href: "/book",
+    label: "Book call",
+  },
 ] as const;
 
 const MENU_NAV_ITEMS = [
-  {
-    href: "/service",
-    label: "Services",
-  },
-  {
-    href: "/pricing",
-    label: "Pricing",
-  },
   {
     href: "/process",
     label: "How we work",
   },
   {
+    href: "/about-us",
+    label: "About us",
+  },
+  {
     href: "/contact",
     label: "Contact",
   },
-] as const;
-
-const ACTION_ITEMS = [
   {
-    href: "/login",
-    label: "Kirjaudu",
+    href: "/cases",
+    label: "Cases",
+  },
+  {
+    href: "/book",
+    label: "Book call",
   },
 ] as const;
 
@@ -56,10 +65,6 @@ const MOBILE_NAV_ITEMS = [
     label: "Services",
   },
   {
-    href: "/pricing",
-    label: "Pricing",
-  },
-  {
     href: "/process",
     label: "How we work",
   },
@@ -70,6 +75,14 @@ const MOBILE_NAV_ITEMS = [
   {
     href: "/contact",
     label: "Contact",
+  },
+  {
+    href: "/cases",
+    label: "Cases",
+  },
+  {
+    href: "/book",
+    label: "Book call",
   },
 ] as const;
 
@@ -90,10 +103,6 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const openMenu = () => {
-    setIsMenuOpen(true);
-  };
-
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
@@ -101,10 +110,6 @@ export default function Header() {
   const toggleMenu = () => {
     setIsMenuOpen((currentValue) => !currentValue);
   };
-
-  useEffect(() => {
-    closeMenu();
-  }, [pathname]);
 
   useEffect(() => {
     const SCROLLED_ON_THRESHOLD = 80;
@@ -209,6 +214,7 @@ export default function Header() {
                     <Link
                       href={item.href}
                       className={styles.navigationLink}
+                      onClick={closeMenu}
                       aria-current={isActive ? "page" : undefined}
                       data-active={isActive}
                     >
@@ -275,55 +281,12 @@ export default function Header() {
                     })}
                   </ul>
 
-                  <div className={styles.menuMobileAction}>
-                    {ACTION_ITEMS.map((item) => {
-                      const isActive = isActivePath(pathname, item.href);
-
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={styles.menuActionLink}
-                          aria-current={isActive ? "page" : undefined}
-                          data-active={isActive}
-                          role="menuitem"
-                        >
-                          {item.label}
-                        </Link>
-                      );
-                    })}
-                  </div>
                 </div>
 
                 <div className={`${styles.menuSection} ${styles.menuSectionDesktop}`}>
                   <p className={styles.menuSectionLabel}>Menu</p>
                   <ul className={styles.menuList}>
                     {MENU_NAV_ITEMS.map((item) => {
-                      const isActive = isActivePath(pathname, item.href);
-
-                      return (
-                        <li key={item.href} className={styles.menuItem}>
-                          <Link
-                            href={item.href}
-                            className={styles.menuLink}
-                            aria-current={isActive ? "page" : undefined}
-                            data-active={isActive}
-                            role="menuitem"
-                          >
-                            {item.label}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-
-                <div className={`${styles.menuDivider} ${styles.menuSectionDesktop}`} />
-
-                <div className={`${styles.menuSection} ${styles.menuSectionDesktop}`}>
-                  <p className={styles.menuSectionLabel}>Actions</p>
-                  <ul className={styles.menuList}>
-                    {ACTION_ITEMS.map((item) => {
                       const isActive = isActivePath(pathname, item.href);
 
                       return (

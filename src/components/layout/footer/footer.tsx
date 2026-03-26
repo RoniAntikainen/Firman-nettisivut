@@ -1,4 +1,5 @@
-import styles from "@/components/layout/footer/footer.module.css"
+import Link from "next/link";
+import styles from "@/components/layout/footer/footer.module.css";
 
 export default function Footer() {
   return (
@@ -6,7 +7,7 @@ export default function Footer() {
       <div className={styles.footerInner}>
         <div className={styles.footerTop}>
           <div className={styles.footerBrand}>
-            <span className={styles.footerLogo}>Company</span>
+            <span className={styles.footerLogo}>Weboryn</span>
             <p className={styles.footerTagline}>
               We design and build systems that actually work — from internal tools to full web platforms.
             </p>
@@ -21,10 +22,13 @@ export default function Footer() {
                 className={styles.footerNav}
                 aria-label="Footer navigation"
               >
-                <a href="/">Home</a>
-                <a href="/about-us">About</a>
-                <a href="/service">Services</a>
-                <a href="/contact">Contact</a>
+                <Link href="/">Home</Link>
+                <Link href="/about-us">About</Link>
+                <Link href="/service">Services</Link>
+                <Link href="/process">Process</Link>
+                <Link href="/cases">Cases</Link>
+                <Link href="/book">Book call</Link>
+                <Link href="/contact">Contact</Link>
               </nav>
             </div>
 
@@ -34,8 +38,8 @@ export default function Footer() {
 
               <div className={styles.footerContactItem}>
                 <span className={styles.footerLabel}>Email</span>
-                <a href="mailto:hello@yourcompany.com">
-                  hello@yourcompany.com
+                <a href="mailto:hello@weboryn.com">
+                  hello@weboryn.com
                 </a>
               </div>
 
@@ -56,14 +60,14 @@ export default function Footer() {
         </div>
 
         <div className={styles.footerBottom}>
-          <span>© {new Date().getFullYear()} Company. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Weboryn. All rights reserved.</span>
 
           <div className={styles.footerMeta}>
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
