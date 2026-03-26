@@ -15,6 +15,8 @@ type CardSlotOrder = {
   preview: CardSlotKey;
 };
 
+
+
 function getRandomCardSlotOrder(): CardSlotOrder {
   const slots: CardSlotKey[] = ["request", "editor", "preview"];
 
@@ -36,13 +38,35 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
+
+const CARD_EDGE_INSET_PX = 16;
+const PREVIEW_READY_SCALE = 1.03;
+
+function clampCardLeft(left: number, rootWidth: number, measuredCardWidth: number, scale = 1) {
+  const safeCardWidth = measuredCardWidth * scale;
+  const maxLeft = Math.max(CARD_EDGE_INSET_PX, rootWidth - safeCardWidth - CARD_EDGE_INSET_PX);
+
+  return clamp(left, CARD_EDGE_INSET_PX, maxLeft);
+}
+
 const READY_CURSOR_SYNC_DURATION_MS = 520;
 
 export default function HeroSystemVisual() {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<HTMLDivElement | null>(null);
   const previewViewportRef = useRef<HTMLDivElement | null>(null);
   const previewButtonRef = useRef<HTMLSpanElement | null>(null);
   const cursorRef = useRef<HTMLDivElement | null>(null);
+
+  const requestCardRef = useRef<HTMLDivElement | null>(null);
+  const editorCardRef = useRef<HTMLDivElement | null>(null);
+  const previewCardRef = useRef<HTMLDivElement | null>(null);
+
+  const [measuredCardWidths, setMeasuredCardWidths] = useState({
+    request: 304,
+    editor: 344,
+    preview: 464,
+  });
 
   const [phase, setPhase] = useState<Phase>("intro");
   const [itemIndex, setItemIndex] = useState(0);
@@ -58,6 +82,25 @@ export default function HeroSystemVisual() {
   const requestPosition = currentLayout ? currentLayout[cardSlotOrder.request] : null;
   const editorPosition = currentLayout ? currentLayout[cardSlotOrder.editor] : null;
   const previewPosition = currentLayout ? currentLayout[cardSlotOrder.preview] : null;
+  const rootWidth = sceneRef.current?.clientWidth ?? rootRef.current?.clientWidth ?? 0;
+  const requestMeasuredWidth = measuredCardWidths.request;
+  const editorMeasuredWidth = measuredCardWidths.editor;
+  const previewMeasuredWidth = measuredCardWidths.preview;
+
+  const requestLeft = requestPosition
+    ? clampCardLeft(requestPosition.left, rootWidth, requestMeasuredWidth)
+    : 0;
+  const editorLeft = editorPosition
+    ? clampCardLeft(editorPosition.left, rootWidth, editorMeasuredWidth)
+    : 0;
+  const previewLeft = previewPosition
+    ? clampCardLeft(
+        previewPosition.left,
+        rootWidth,
+        previewMeasuredWidth,
+        phase === "ready" ? PREVIEW_READY_SCALE : 1
+      )
+    : 0;
 
   const editorStatusLabel =
     phase === "ready" || phase === "handoff"
@@ -136,6 +179,27 @@ export default function HeroSystemVisual() {
 
     const onResize = () => {
       refreshLayoutSequence(false);
+      syncCursorTarget();
+
+      const nextRequestWidth = requestCardRef.current?.offsetWidth ?? 304;
+      const nextEditorWidth = editorCardRef.current?.offsetWidth ?? 344;
+      const nextPreviewWidth = previewCardRef.current?.offsetWidth ?? 464;
+
+      setMeasuredCardWidths((currentWidths) => {
+        if (
+          currentWidths.request === nextRequestWidth &&
+          currentWidths.editor === nextEditorWidth &&
+          currentWidths.preview === nextPreviewWidth
+        ) {
+          return currentWidths;
+        }
+
+        return {
+          request: nextRequestWidth,
+          editor: nextEditorWidth,
+          preview: nextPreviewWidth,
+        };
+      });
     };
 
     window.addEventListener("resize", onResize);
@@ -148,6 +212,38 @@ export default function HeroSystemVisual() {
   useEffect(() => {
     syncCursorTarget();
   }, [syncCursorTarget, currentLayout, itemIndex, phase]);
+
+  useEffect(() => {
+    const updateMeasuredWidths = () => {
+      const nextRequestWidth = requestCardRef.current?.offsetWidth ?? 304;
+      const nextEditorWidth = editorCardRef.current?.offsetWidth ?? 344;
+      const nextPreviewWidth = previewCardRef.current?.offsetWidth ?? 464;
+
+      setMeasuredCardWidths((currentWidths) => {
+        if (
+          currentWidths.request === nextRequestWidth &&
+          currentWidths.editor === nextEditorWidth &&
+          currentWidths.preview === nextPreviewWidth
+        ) {
+          return currentWidths;
+        }
+
+        return {
+          request: nextRequestWidth,
+          editor: nextEditorWidth,
+          preview: nextPreviewWidth,
+        };
+      });
+    };
+
+    updateMeasuredWidths();
+
+    const frameId = window.requestAnimationFrame(updateMeasuredWidths);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [currentLayout, cardSlotOrder, itemIndex, phase]);
 
   useEffect(() => {
     if (phase !== "ready") return;
@@ -305,14 +401,15 @@ export default function HeroSystemVisual() {
       data-phase={phase}
       aria-hidden="true"
     >
-      <div className={styles.scene}>
+      <div ref={sceneRef} className={styles.scene}>
         {currentLayout ? (
           <>
             <div
               className={styles.requestCard}
+              ref={requestCardRef}
               style={{
                 top: `${requestPosition?.top ?? 0}px`,
-                left: `${requestPosition?.left ?? 0}px`,
+                left: `${requestLeft}px`,
               }}
             >
               <div className={styles.requestTop}>
@@ -361,9 +458,10 @@ export default function HeroSystemVisual() {
 
             <div
               className={styles.editorCard}
+              ref={editorCardRef}
               style={{
                 top: `${editorPosition?.top ?? 0}px`,
-                left: `${editorPosition?.left ?? 0}px`,
+                left: `${editorLeft}px`,
               }}
             >
               <div className={styles.editorHeader}>
@@ -474,9 +572,10 @@ export default function HeroSystemVisual() {
 
             <div
               className={styles.previewCard}
+              ref={previewCardRef}
               style={{
                 top: `${previewPosition?.top ?? 0}px`,
-                left: `${previewPosition?.left ?? 0}px`,
+                left: `${previewLeft}px`,
               }}
             >
               <div className={styles.previewChrome}>
