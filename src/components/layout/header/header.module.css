@@ -757,13 +757,11 @@
     padding-block: 0;
     gap: var(--space-4);
     transition:
-      min-height 180ms ease,
       gap 180ms ease,
       width 180ms ease;
   }
 
   .headerScrolled .inner {
-    min-height: 3.6rem;
     padding-block: 0;
   }
 
@@ -779,13 +777,16 @@
 
   .brandLink {
     min-height: 3rem;
-    transition-duration: 220ms;
+    transform-origin: left center;
+    transition:
+      color 180ms ease,
+      opacity 180ms ease,
+      box-shadow 180ms ease,
+      transform 220ms ease;
   }
 
   .headerScrolled .brandLink {
-    min-height: 2.5rem;
-    font-size: var(--text-label-sm-size);
-    line-height: var(--text-label-sm-line-height);
+    transform: scale(0.92);
   }
 
   .menuButton {
@@ -798,12 +799,17 @@
     color: var(--color-fg-default);
     font-size: var(--text-label-md-size);
     line-height: var(--text-label-md-line-height);
-    transition-duration: 220ms;
+    transform-origin: center;
+    transition:
+      color 180ms ease,
+      opacity 180ms ease,
+      box-shadow 180ms ease,
+      transform 220ms ease,
+      background-color 180ms ease;
   }
 
   .headerScrolled .menuButton {
-    min-width: 2.5rem;
-    min-height: 2.5rem;
+    transform: scale(0.9);
   }
 
   .menuButton::after {
