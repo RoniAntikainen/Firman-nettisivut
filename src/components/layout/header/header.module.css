@@ -11,7 +11,6 @@
 
   background-color: transparent;
   border-bottom: 1px solid transparent;
-
   transition:
     background-color 180ms ease,
     border-color 180ms ease;
@@ -125,7 +124,45 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--space-1);
+  gap: var(--space-2);
+}
+
+.localeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.localeLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--nav-item-height);
+  padding: 0 0.75rem;
+  border-radius: var(--radius-full);
+  color: var(--color-fg-subtle);
+  text-decoration: none;
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-medium);
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.localeLink:hover {
+  color: var(--color-fg-default);
+}
+
+.localeLink:focus-visible {
+  outline: var(--outline-width) solid transparent;
+  box-shadow: var(--focus-ring);
+}
+
+.localeLink[data-active="true"] {
+  color: var(--color-fg-default);
+  background-color: color-mix(in srgb, var(--color-surface-secondary) 78%, transparent);
 }
 
 /* =========================================================
@@ -437,7 +474,7 @@
   left: auto;
   z-index: calc(var(--z-index-dropdown) + 1);
 
-  width: min(28rem, 92vw);
+  width: min(29rem, 92vw);
   max-height: none;
   overflow: hidden;
 
@@ -448,16 +485,14 @@
   transform: translateX(100%);
   transform-origin: right center;
 
-  background: color-mix(
-    in srgb,
-    var(--color-surface-primary) 88%,
-    transparent
-  );
-  border-left: 1px solid rgba(17, 17, 17, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(250, 251, 252, 0.96)),
+    color-mix(in srgb, var(--color-surface-primary) 88%, transparent);
+  border-left: 1px solid rgba(17, 17, 17, 0.06);
   backdrop-filter: blur(20px);
   box-shadow:
-    -28px 0 56px rgba(23, 50, 34, 0.12),
-    -10px 0 24px rgba(23, 50, 34, 0.06);
+    -28px 0 56px rgba(23, 50, 34, 0.09),
+    -10px 0 24px rgba(23, 50, 34, 0.05);
 
   transition:
     opacity var(--duration-normal) var(--easing-standard),
@@ -480,9 +515,8 @@
   overscroll-behavior: contain;
 
   justify-content: space-between;
-  gap: 32px;
-
-  padding: 96px 24px 32px;
+  gap: 28px;
+  padding: 92px 24px 28px;
 
   background: transparent;
   backdrop-filter: none;
@@ -491,7 +525,7 @@
 
 .menuSection {
   display: grid;
-  gap: var(--space-2);
+  gap: 14px;
 }
 
 .menuSectionDesktop {
@@ -519,27 +553,27 @@
 .menuIntro {
   display: grid;
   gap: 10px;
-  padding: 4px 2px 18px;
+  padding: 4px 2px 12px;
 }
 
 .menuIntroText {
   margin: 0;
-  max-width: 32ch;
+  max-width: 28ch;
   color: var(--color-fg-subtle);
-  font-size: var(--text-body-sm-size);
-  line-height: 1.55;
+  font-size: 0.9rem;
+  line-height: 1.5;
   text-wrap: pretty;
 }
 
 .menuDesktopGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px 16px;
+  gap: 18px 14px;
 }
 
 .menuColumn {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   align-content: start;
 }
 
@@ -547,10 +581,10 @@
   margin: 0;
   color: var(--color-fg-muted);
   text-transform: uppercase;
-  font-size: var(--text-label-sm-size);
-  line-height: var(--text-label-sm-line-height);
+  font-size: 0.68rem;
+  line-height: 1.2;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-wider);
+  letter-spacing: 0.14em;
 }
 
 .menuDivider {
@@ -565,7 +599,7 @@
 
 .menuList {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 
   margin: 0;
   padding: 0;
@@ -583,16 +617,16 @@
   align-items: center;
 
   width: 100%;
-  min-height: 3rem;
-  padding: 0 16px;
-  border-radius: 18px;
+  min-height: 2.9rem;
+  padding: 0 14px;
+  border-radius: 16px;
 
   color: var(--color-fg-subtle);
   text-decoration: none;
 
   font-family: var(--font-family-base);
-  font-size: var(--text-body-sm-size);
-  line-height: 1.4;
+  font-size: 0.92rem;
+  line-height: 1.38;
   font-weight: var(--font-weight-medium);
 
   transition:
@@ -604,15 +638,19 @@
 
 .menuLink:hover {
   color: var(--color-fg-default);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.06);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 17, 17, 0.05),
+    0 8px 20px rgba(23, 50, 34, 0.04);
 }
 
 .menuLink[data-active="true"] {
   color: var(--color-fg-default);
   font-weight: var(--font-weight-semibold);
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 17, 17, 0.07),
+    0 10px 22px rgba(23, 50, 34, 0.05);
 }
 
 .menuLink:hover::before,
@@ -629,9 +667,33 @@
 .menuMeta {
   display: grid;
   gap: 8px;
-  margin-top: 6px;
-  padding-top: 18px;
+  margin-top: 4px;
+  padding-top: 16px;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.menuHighlights {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 2px 0 0;
+  list-style: none;
+}
+
+.menuHighlightItem {
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  gap: 10px;
+  align-items: start;
+  color: var(--color-fg-subtle);
+  font-size: 0.84rem;
+  line-height: 1.48;
+}
+
+.menuHighlightMark {
+  color: var(--color-fg-default);
+  font-size: 0.9em;
+  transform: translateY(0.08em);
 }
 
 .menuMetaLabel {
@@ -752,7 +814,12 @@
     flex: 1 1 auto;
     flex-direction: column;
     justify-content: space-between;
-    gap: var(--space-8);
+    gap: var(--space-6);
+  }
+
+  .menuMobileIntro {
+    display: grid;
+    gap: 8px;
   }
 
   .menuListMobile {
@@ -786,19 +853,11 @@
   }
 
   .menuLinkMobile:hover {
-    background: color-mix(
-      in srgb,
-      var(--color-surface-primary) 78%,
-      transparent
-    );
+    background: rgba(255, 255, 255, 0.84);
   }
 
   .menuLinkMobile[data-active="true"] {
-    background: color-mix(
-      in srgb,
-      var(--color-surface-primary) 88%,
-      transparent
-    );
+    background: rgba(255, 255, 255, 0.92);
   }
 
   .menuMobileAction {

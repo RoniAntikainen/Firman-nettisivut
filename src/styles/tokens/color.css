@@ -12,8 +12,8 @@
   --color-border-primary: #cfcfcf;
   --color-border-strong: #9f9f9f;
   --color-text-primary: #111111;
-  --color-text-secondary: #333333;
-  --color-text-muted: #666666;
+  --color-text-secondary: #262626;
+  --color-text-muted: #4f4f4f;
   --color-text-inverse: #ffffff;
   --color-brand-50: #fafafa;
   --color-brand-100: #f2f2f2;
@@ -72,5 +72,5 @@
   --color-link-active: #444444;
   --color-selection-bg: rgba(0, 0, 0, 0.14);
   --color-selection-text: #ffffff;
-  --color-focus-ring: rgba(0, 0, 0, 0.18);
+  --color-focus-ring: rgba(24, 79, 153, 0.34);
 }

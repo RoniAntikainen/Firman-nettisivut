@@ -1,5 +1,61 @@
+.heroSignals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.heroSignal {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding-left: 2px;
+  border-left: 1px solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+}
+
+.heroSignalIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text-primary) 4%, white);
+  color: color-mix(in srgb, var(--color-text-primary) 62%, transparent);
+  font-size: 0.76rem;
+  line-height: 1;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.heroSignalCopy {
+  display: grid;
+  gap: 4px;
+}
+
+.heroSignalTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(0.94rem, 1.15vw, 1.02rem);
+  line-height: 1.18;
+  font-weight: var(--font-weight-semibold);
+  text-wrap: balance;
+}
+
+.heroSignalText {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.44;
+  text-wrap: pretty;
+}
+
 .bookingForm {
   width: 100%;
+  box-shadow:
+    0 18px 42px rgba(23, 50, 34, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.4) inset;
 }
 
 .field {
@@ -43,14 +99,38 @@
 }
 
 .success {
-  color: var(--color-text-primary);
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: color-mix(in srgb, #8fb4ff 10%, white 90%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text-primary) 7%, transparent);
 }
 
 .error {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: color-mix(in srgb, #f2b8b8 18%, white 82%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #8f1d1d 12%, transparent);
+}
+
+.feedbackTitle {
   margin: 0;
+  color: var(--color-text-primary);
   font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.feedbackText {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm-size);
   line-height: var(--text-body-sm-line-height);
-  color: #8f1d1d;
 }
 
 .inlineLink {
@@ -59,4 +139,17 @@
   color: var(--color-text-secondary);
   text-decoration: underline;
   text-underline-offset: 0.16em;
+}
+
+@media (max-width: 900px) {
+  .heroSignals {
+    grid-template-columns: 1fr;
+  }
+
+  .heroSignal {
+    padding-left: 0;
+    padding-top: 14px;
+    border-left: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  }
 }

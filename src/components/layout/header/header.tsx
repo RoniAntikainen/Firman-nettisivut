@@ -4,111 +4,143 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "@/components/layout/header/header.module.css";
+import {
+  type Locale,
+  localizeHref,
+  stripLocaleFromPathname,
+  switchLocaleInPathname,
+} from "@/lib/i18n/config";
 
-const PRIMARY_NAV_ITEMS = [
-  {
-    href: "/",
-    label: "Home",
-  },
-  {
-    href: "/contact",
-    label: "Contact",
-  },
-] as const;
-
-const MENU_GROUPS = [
-  {
-    label: "Overview",
-    items: [
+const HEADER_COPY = {
+  en: {
+    brandAriaLabel: "Home",
+    primaryNavItems: [
+      { href: "/", label: "Home" },
+      { href: "/process", label: "Process" },
+      { href: "/contact", label: "Contact" },
+    ],
+    menuGroups: [
       {
-        href: "/",
-        label: "Home",
+        label: "Start",
+        items: [
+          { href: "/", label: "Home" },
+          { href: "/about-us", label: "About" },
+        ],
       },
       {
-        href: "/about-us",
-        label: "About us",
+        label: "Work",
+        items: [
+          { href: "/service", label: "Services" },
+          { href: "/cases", label: "Cases" },
+        ],
       },
       {
-        href: "/contact",
-        label: "Contact",
+        label: "Process",
+        items: [
+          { href: "/process", label: "Process" },
+          { href: "/book", label: "Book a call" },
+          { href: "/contact", label: "Contact" },
+        ],
       },
     ],
+    menuHighlights: [
+      "See how the work is structured.",
+      "Jump straight to the page you actually need.",
+    ],
+    mobileNavItems: [
+      { href: "/", label: "Home" },
+      { href: "/service", label: "Services" },
+      { href: "/process", label: "Process" },
+      { href: "/about-us", label: "About" },
+      { href: "/cases", label: "Cases" },
+      { href: "/book", label: "Book a call" },
+      { href: "/contact", label: "Contact" },
+    ],
+    menuOpen: "Menu",
+    menuClose: "Close",
+    menuOpenMobile: "Open navigation",
+    menuAriaLabel: "Additional links",
+    menuSectionLabel: "Navigation",
+    menuIntroText: "Everything in one place, with names that match where each page actually takes you.",
+    directContact: "Direct contact",
+    directContactLink: "Show us the bottleneck",
   },
-  {
-    label: "Work",
-    items: [
+  fi: {
+    brandAriaLabel: "Etusivu",
+    primaryNavItems: [
+      { href: "/", label: "Etusivu" },
+      { href: "/process", label: "Prosessi" },
+      { href: "/contact", label: "Yhteys" },
+    ],
+    menuGroups: [
       {
-        href: "/service",
-        label: "Services",
+        label: "Alku",
+        items: [
+          { href: "/", label: "Etusivu" },
+          { href: "/about-us", label: "Meistä" },
+        ],
       },
       {
-        href: "/cases",
-        label: "Cases",
+        label: "Työ",
+        items: [
+          { href: "/service", label: "Palvelut" },
+          { href: "/cases", label: "Caset" },
+        ],
+      },
+      {
+        label: "Prosessi",
+        items: [
+          { href: "/process", label: "Prosessi" },
+          { href: "/book", label: "Varaa puhelu" },
+          { href: "/contact", label: "Yhteys" },
+        ],
       },
     ],
-  },
-  {
-    label: "Process",
-    items: [
-      {
-        href: "/process",
-        label: "How we work",
-      },
-      {
-        href: "/book",
-        label: "Book call",
-      },
+    menuHighlights: [
+      "Katso miten työ on jäsennelty.",
+      "Siirry suoraan juuri siihen sivuun mitä tarvitset.",
     ],
+    mobileNavItems: [
+      { href: "/", label: "Etusivu" },
+      { href: "/service", label: "Palvelut" },
+      { href: "/process", label: "Prosessi" },
+      { href: "/about-us", label: "Meistä" },
+      { href: "/cases", label: "Caset" },
+      { href: "/book", label: "Varaa puhelu" },
+      { href: "/contact", label: "Yhteys" },
+    ],
+    menuOpen: "Valikko",
+    menuClose: "Sulje",
+    menuOpenMobile: "Avaa navigaatio",
+    menuAriaLabel: "Lisälinkit",
+    menuSectionLabel: "Navigaatio",
+    menuIntroText: "Kaikki yhdessä paikassa, nimillä jotka vastaavat siihen mihin sivu oikeasti vie.",
+    directContact: "Suora yhteys",
+    directContactLink: "Näytä pullonkaula",
   },
-] as const;
-
-const MOBILE_NAV_ITEMS = [
-  {
-    href: "/",
-    label: "Home"
-  },
-  {
-    href: "/service",
-    label: "Services",
-  },
-  {
-    href: "/process",
-    label: "How we work",
-  },
-  {
-    href: "/about-us",
-    label: "About us",
-  },
-  {
-    href: "/contact",
-    label: "Contact",
-  },
-  {
-    href: "/cases",
-    label: "Cases",
-  },
-  {
-    href: "/book",
-    label: "Book call",
-  },
-] as const;
+} as const;
 
 function isActivePath(pathname: string, href: string) {
+  const normalizedPathname = stripLocaleFromPathname(pathname);
+
   if (href === "/") {
-    return pathname === "/";
+    return normalizedPathname === "/";
   }
 
-  return pathname === href || pathname.startsWith(`${href}/`);
+  return normalizedPathname === href || normalizedPathname.startsWith(`${href}/`);
 }
 
-export default function Header() {
+export default function Header({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const copy = HEADER_COPY[locale];
+  const localeSwitchPath = stripLocaleFromPathname(pathname);
 
   const menuId = useId();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const previousPathnameRef = useRef(pathname);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -164,6 +196,22 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    if (previousPathnameRef.current === pathname) {
+      return;
+    }
+
+    previousPathnameRef.current = pathname;
+
+    const timeoutId = window.setTimeout(() => {
+      setIsMenuOpen(false);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
     if (!isMenuOpen) {
       return;
     }
@@ -205,7 +253,11 @@ export default function Header() {
     >
       <div className={styles.inner}>
         <div className={styles.brand}>
-          <Link href="/" className={styles.brandLink} aria-label="Etusivu">
+          <Link
+            href={localizeHref("/", locale)}
+            className={styles.brandLink}
+            aria-label={copy.brandAriaLabel}
+          >
             Weboryn
           </Link>
         </div>
@@ -213,13 +265,13 @@ export default function Header() {
         <div className={styles.desktopArea}>
           <nav className={styles.navigation} aria-label="Päävalikko">
             <ul className={styles.navigationList}>
-              {PRIMARY_NAV_ITEMS.map((item) => {
+              {copy.primaryNavItems.map((item) => {
                 const isActive = isActivePath(pathname, item.href);
 
                 return (
                   <li key={item.href} className={styles.navigationItem}>
                     <Link
-                      href={item.href}
+                      href={localizeHref(item.href, locale)}
                       className={styles.navigationLink}
                       onClick={closeMenu}
                       aria-current={isActive ? "page" : undefined}
@@ -245,9 +297,9 @@ export default function Header() {
               data-open={isMenuOpen}
             >
               <span className={styles.menuButtonLabel}>
-                {isMenuOpen ? "Close" : "Menu"}
+                {isMenuOpen ? copy.menuClose : copy.menuOpen}
               </span>
-              <span className={styles.menuButtonLabelMobile}>Open navigation</span>
+              <span className={styles.menuButtonLabelMobile}>{copy.menuOpenMobile}</span>
               <span className={styles.menuButtonIcon} aria-hidden="true">
                 <span className={styles.menuButtonLine} />
                 <span className={styles.menuButtonLine} />
@@ -266,18 +318,18 @@ export default function Header() {
               className={styles.menuPanel}
               data-open={isMenuOpen}
               role="menu"
-              aria-label="Lisälinkit"
+              aria-label={copy.menuAriaLabel}
             >
               <div className={styles.menuPanelInner}>
                 <div className={styles.menuMobileShell}>
                   <ul className={`${styles.menuList} ${styles.menuListMobile}`}>
-                    {MOBILE_NAV_ITEMS.map((item) => {
+                    {copy.mobileNavItems.map((item) => {
                       const isActive = isActivePath(pathname, item.href);
 
                       return (
                         <li key={item.href} className={styles.menuItem}>
                           <Link
-                            href={item.href}
+                            href={localizeHref(item.href, locale)}
                             className={`${styles.menuLink} ${styles.menuLinkMobile}`}
                             aria-current={isActive ? "page" : undefined}
                             data-active={isActive}
@@ -289,19 +341,17 @@ export default function Header() {
                       );
                     })}
                   </ul>
-
                 </div>
 
                 <div className={`${styles.menuSection} ${styles.menuSectionDesktop}`}>
                   <div className={styles.menuIntro}>
-                    <p className={styles.menuSectionLabel}>Navigation</p>
+                    <p className={styles.menuSectionLabel}>{copy.menuSectionLabel}</p>
                     <p className={styles.menuIntroText}>
-                      Start anywhere, but use this menu when you want
-                      the full picture.
+                      {copy.menuIntroText}
                     </p>
                   </div>
                   <div className={styles.menuDesktopGrid}>
-                    {MENU_GROUPS.map((group) => (
+                    {copy.menuGroups.map((group) => (
                       <div key={group.label} className={styles.menuColumn}>
                         <p className={styles.menuColumnLabel}>{group.label}</p>
                         <ul className={styles.menuList}>
@@ -311,7 +361,7 @@ export default function Header() {
                             return (
                               <li key={item.href} className={styles.menuItem}>
                                 <Link
-                                  href={item.href}
+                                  href={localizeHref(item.href, locale)}
                                   className={styles.menuLink}
                                   aria-current={isActive ? "page" : undefined}
                                   data-active={isActive}
@@ -327,14 +377,42 @@ export default function Header() {
                     ))}
                   </div>
 
-                  <div className={styles.menuMeta}>
-                    <p className={styles.menuMetaLabel}>Direct contact</p>
+                  <ul className={styles.menuHighlights} aria-label="Menu highlights">
+                    {copy.menuHighlights.map((item) => (
+                      <li key={item} className={styles.menuHighlightItem}>
+                        <span className={styles.menuHighlightMark} aria-hidden="true">
+                          •
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className={styles.localeSwitch} aria-label="Language switcher">
                     <Link
-                      href="/contact"
+                      href={switchLocaleInPathname(localeSwitchPath, "fi")}
+                      className={styles.localeLink}
+                      data-active={locale === "fi"}
+                    >
+                      FI
+                    </Link>
+                    <Link
+                      href={switchLocaleInPathname(localeSwitchPath, "en")}
+                      className={styles.localeLink}
+                      data-active={locale === "en"}
+                    >
+                      EN
+                    </Link>
+                  </div>
+
+                  <div className={styles.menuMeta}>
+                    <p className={styles.menuMetaLabel}>{copy.directContact}</p>
+                    <Link
+                      href={localizeHref("/contact", locale)}
                       className={styles.menuMetaLink}
                       aria-current={isActivePath(pathname, "/contact") ? "page" : undefined}
                     >
-                      Tell us what needs to work better
+                      {copy.directContactLink}
                     </Link>
                   </div>
                 </div>

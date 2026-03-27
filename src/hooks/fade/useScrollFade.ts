@@ -12,17 +12,22 @@ export function useScrollFade(
   ref: React.RefObject<HTMLElement | null>,
   options?: ScrollFadeOptions
 ) {
+  const triggerFactor = options?.triggerFactor ?? 0.99;
+  const power = options?.power ?? 1.6;
+  const start = options?.start ?? 75;
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    const {
-      triggerFactor = 0.99,
-      power = 1.6,
-      start = 75,
-    } = options || {};
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.style.setProperty("--fade-start", "0%");
+      return;
+    }
 
-    const onScroll = () => {
+    let rafId: number | null = null;
+
+    const updateFade = () => {
       const rect = el.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 
@@ -37,11 +42,28 @@ export function useScrollFade(
       const value = Math.max(start - eased * start, 0);
 
       el.style.setProperty("--fade-start", `${value}%`);
+      rafId = null;
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    const requestUpdate = () => {
+      if (rafId !== null) {
+        return;
+      }
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [ref, options]);
+      rafId = window.requestAnimationFrame(updateFade);
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    requestUpdate();
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
+  }, [ref, power, start, triggerFactor]);
 }

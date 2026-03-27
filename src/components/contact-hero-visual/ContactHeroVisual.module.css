@@ -1,0 +1,472 @@
+.shell {
+  --visual-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --visual-drift-duration: 18s;
+  --visual-route-duration: 11s;
+  --visual-breathe-duration: 13s;
+  --visual-pulse-duration: 4.8s;
+  display: grid;
+  gap: 12px;
+  width: min(100%, 34rem);
+  padding: 20px;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(250, 252, 255, 0.92), rgba(255, 255, 255, 0.72)),
+    radial-gradient(circle at top left, rgba(239, 244, 252, 0.78), transparent 55%);
+  box-shadow:
+    0 18px 44px rgba(89, 106, 139, 0.08),
+    0 5px 16px rgba(89, 106, 139, 0.04);
+  backdrop-filter: blur(10px);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eyebrow {
+  color: var(--color-text-muted);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0 0.62rem;
+  border-radius: 999px;
+  background: rgba(111, 138, 186, 0.12);
+  color: color-mix(in srgb, var(--color-text-primary) 82%, #5470a6);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-semibold);
+}
+
+.visualFrame {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: 4.75rem 16px 16px;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(248, 251, 255, 0.82), rgba(255, 255, 255, 0.48)),
+    rgba(255, 255, 255, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(96, 122, 166, 0.1);
+  overflow: hidden;
+}
+
+.gridGlow {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(114, 137, 175, 0.042) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(114, 137, 175, 0.042) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at 46% 50%, black 30%, transparent 80%);
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.ambientGlow {
+  position: absolute;
+  inset: auto auto 6% 44%;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(113, 145, 205, 0.16), transparent 72%);
+  filter: blur(28px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.focusBeam {
+  position: absolute;
+  top: 5.2rem;
+  right: 3.5rem;
+  width: 7.5rem;
+  height: 11rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(116, 145, 198, 0.16),
+    rgba(116, 145, 198, 0)
+  );
+  filter: blur(20px);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.mapLabels {
+  position: absolute;
+  inset: 1rem 1rem auto 1rem;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  pointer-events: none;
+}
+
+.mapLabel {
+  display: grid;
+  gap: 2px;
+  opacity: 0.66;
+}
+
+.mapLabelActive {
+  opacity: 1;
+}
+
+.mapLabelTitle {
+  color: color-mix(in srgb, var(--color-text-primary) 84%, #5771a0);
+  font-size: 0.68rem;
+  line-height: 1.2;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.mapLabelText {
+  color: var(--color-text-secondary);
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.visual {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.noiseGroup {
+  animation: driftNoise var(--visual-drift-duration) var(--visual-ease) infinite;
+}
+
+.noiseOrb {
+  fill: rgba(106, 129, 174, 0.34);
+}
+
+.noiseTrace {
+  fill: none;
+  stroke: rgba(110, 132, 177, 0.24);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 3 12;
+}
+
+.mergeGuide {
+  fill: none;
+  stroke: rgba(104, 126, 170, 0.18);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 3 10;
+}
+
+.routeBase {
+  fill: none;
+  stroke: rgba(104, 126, 170, 0.24);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 4 8;
+}
+
+.routeFocus {
+  fill: none;
+  stroke: rgba(64, 88, 135, 0.78);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: revealRoute var(--visual-route-duration) var(--visual-ease) infinite;
+}
+
+.coreGlow {
+  fill: rgba(118, 145, 205, 0.18);
+  filter: url(#contact-soft-blur);
+  animation: breatheCore var(--visual-breathe-duration) var(--visual-ease) infinite;
+}
+
+.coreRing,
+.coreRingInner {
+  fill: none;
+  stroke: rgba(114, 137, 179, 0.28);
+}
+
+.coreRing {
+  stroke-width: 1.5;
+}
+
+.coreRingInner {
+  stroke-width: 1;
+  stroke-dasharray: 3 8;
+}
+
+.node,
+.nodeStrong,
+.signalDotPrimary,
+.signalDotSecondary,
+.signalDotTertiary {
+  fill: rgba(73, 95, 137, 0.92);
+}
+
+.node {
+  opacity: 0.84;
+}
+
+.nodeStrong {
+  opacity: 1;
+}
+
+.coreCenter {
+  fill: rgba(73, 95, 137, 0.96);
+}
+
+.toolShell {
+  fill: rgba(250, 252, 255, 0.74);
+  stroke: rgba(96, 122, 166, 0.18);
+  stroke-width: 1.2;
+}
+
+.toolPanel {
+  fill: rgba(73, 95, 137, 0.88);
+}
+
+.toolLine {
+  fill: rgba(73, 95, 137, 0.26);
+}
+
+.toolLineSoft,
+.toolOrbSoft {
+  fill: rgba(96, 122, 166, 0.16);
+}
+
+.toolOrb {
+  fill: rgba(73, 95, 137, 0.9);
+}
+
+.pulse {
+  fill: none;
+  stroke: rgba(111, 138, 186, 0.34);
+  stroke-width: 1.4;
+  animation: pulseOut var(--visual-pulse-duration) var(--visual-ease) infinite;
+}
+
+.signalDotPrimary {
+  opacity: 1;
+}
+
+.signalDotSecondary,
+.signalDotTertiary {
+  opacity: 0.58;
+}
+
+.focusCard {
+  position: absolute;
+  top: 4.25rem;
+  right: 1rem;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  min-width: 8.5rem;
+  padding: 0.82rem 0.9rem 0.88rem;
+  border-radius: 16px;
+  background: rgba(248, 251, 255, 0.84);
+  box-shadow:
+    0 10px 24px rgba(91, 111, 156, 0.08),
+    inset 0 0 0 1px rgba(96, 122, 166, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.focusLabel {
+  color: color-mix(in srgb, var(--color-text-muted) 86%, #5771a0);
+  font-size: 0.68rem;
+  line-height: 1.2;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+}
+
+.focusTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 0.94rem;
+  line-height: 1.15;
+  font-weight: var(--font-weight-semibold);
+}
+
+.stageRail {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stage {
+  display: grid;
+  align-items: start;
+  padding-top: 11px;
+  border-top: 1px solid rgba(96, 122, 166, 0.18);
+  opacity: 0.56;
+}
+
+.stage[data-active="true"] {
+  opacity: 1;
+}
+
+.stageLabel {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-primary);
+  font-size: var(--text-label-sm-size);
+  line-height: var(--text-label-sm-line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.visual,
+.noiseGroup,
+.routeFocus,
+.coreGlow,
+.pulse,
+.signalDotPrimary,
+.signalDotSecondary,
+.signalDotTertiary {
+  will-change: transform, opacity;
+}
+
+@keyframes driftNoise {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.92;
+  }
+
+  50% {
+    transform: translate3d(8px, -6px, 0);
+    opacity: 0.58;
+  }
+}
+
+@keyframes revealRoute {
+  0%,
+  14% {
+    stroke-dashoffset: 100;
+    opacity: 0.18;
+  }
+
+  40%,
+  72% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: -8;
+    opacity: 0.78;
+  }
+}
+
+@keyframes pulseOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.78);
+  }
+
+  24% {
+    opacity: 0.42;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noiseGroup,
+  .routeFocus,
+  .coreGlow,
+  .pulse {
+    animation: none !important;
+  }
+
+  .signalDotPrimary,
+  .signalDotSecondary,
+  .signalDotTertiary {
+    display: none;
+  }
+}
+
+@keyframes breatheCore {
+  0%,
+  100% {
+    opacity: 0.52;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+@media (max-width: 768px) {
+  .shell {
+    width: 100%;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .visualFrame {
+    padding: 5rem 14px 14px;
+  }
+
+  .focusCard {
+    top: 4.4rem;
+    right: 0.75rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .topBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .focusCard {
+    position: relative;
+    top: auto;
+    right: auto;
+    min-width: 0;
+    width: fit-content;
+    margin-top: 0;
+  }
+
+  .mapLabels {
+    position: relative;
+    inset: auto;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: -0.25rem;
+  }
+
+  .stageRail {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noiseGroup,
+  .routeFocus,
+  .coreGlow,
+  .pulse {
+    animation: none;
+  }
+}

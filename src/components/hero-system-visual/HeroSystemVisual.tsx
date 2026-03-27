@@ -131,6 +131,7 @@ export default function HeroSystemVisual() {
   const [layoutSequence, setLayoutSequence] = useState<Layout[]>([]);
   const [activeLayoutIndex, setActiveLayoutIndex] = useState(0);
   const [cardSlotOrder, setCardSlotOrder] = useState<CardSlotOrder>(() => getRandomCardSlotOrder());
+  const [isDocumentVisible, setIsDocumentVisible] = useState(true);
 
   const current = PROCESS_ITEMS[itemIndex];
   const currentLayout = layoutSequence[activeLayoutIndex] ?? null;
@@ -229,6 +230,19 @@ export default function HeroSystemVisual() {
   }, []);
 
   useEffect(() => {
+    const updateVisibility = () => {
+      setIsDocumentVisible(!document.hidden);
+    };
+
+    updateVisibility();
+    document.addEventListener("visibilitychange", updateVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", updateVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
     const updateMeasurements = () => {
       const nextSceneWidth = sceneRef.current?.clientWidth ?? rootRef.current?.clientWidth ?? 0;
       const nextRequestWidth = requestCardRef.current?.offsetWidth ?? 304;
@@ -309,6 +323,7 @@ export default function HeroSystemVisual() {
   }, [currentLayout, cardSlotOrder, itemIndex, phase]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "ready") return;
 
     let frameId = 0;
@@ -331,9 +346,10 @@ export default function HeroSystemVisual() {
       isActive = false;
       window.cancelAnimationFrame(frameId);
     };
-  }, [phase, syncCursorTarget]);
+  }, [isDocumentVisible, phase, syncCursorTarget]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "request") return;
 
     const timers = [
@@ -347,9 +363,10 @@ export default function HeroSystemVisual() {
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, [phase, itemIndex]);
+  }, [isDocumentVisible, phase, itemIndex]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "scope") return;
 
     const timeout = window.setTimeout(() => {
@@ -358,9 +375,10 @@ export default function HeroSystemVisual() {
     }, SCOPE_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [phase]);
+  }, [isDocumentVisible, phase]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "structure") return;
 
     const timeout = window.setTimeout(() => {
@@ -368,9 +386,10 @@ export default function HeroSystemVisual() {
     }, STRUCTURE_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [phase]);
+  }, [isDocumentVisible, phase]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "build") return;
 
     const timers = [
@@ -383,9 +402,10 @@ export default function HeroSystemVisual() {
     return () => {
       timers.forEach((timer) => window.clearTimeout(timer));
     };
-  }, [phase, itemIndex]);
+  }, [isDocumentVisible, phase, itemIndex]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "polish") return;
 
     const timeout = window.setTimeout(() => {
@@ -393,9 +413,10 @@ export default function HeroSystemVisual() {
     }, POLISH_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [phase]);
+  }, [isDocumentVisible, phase]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "ready") return;
 
     const timeout = window.setTimeout(() => {
@@ -403,9 +424,10 @@ export default function HeroSystemVisual() {
     }, READY_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [phase]);
+  }, [isDocumentVisible, phase]);
 
   useEffect(() => {
+    if (!isDocumentVisible) return;
     if (phase !== "handoff") return;
 
     const timeout = window.setTimeout(() => {
@@ -422,7 +444,7 @@ export default function HeroSystemVisual() {
     }, HANDOFF_DURATION_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [phase, layoutSequence.length]);
+  }, [isDocumentVisible, phase, layoutSequence.length]);
 
   return (
     <div

@@ -1,7 +1,39 @@
+"use client";
+
 import Link from "next/link";
 import styles from "@/components/layout/footer/footer.module.css";
+import {
+  type Locale,
+  localizeHref,
+  switchLocaleInPathname,
+} from "@/lib/i18n/config";
 
-export default function Footer() {
+const FOOTER_COPY = {
+  en: {
+    tagline: "Clearer systems.\nLess wrong work.",
+    goTo: "Go to",
+    process: "Process",
+    contact: "Contact",
+    contactHeading: "Contact",
+    rights: "All rights reserved.",
+    privacy: "Privacy",
+    terms: "Terms",
+  },
+  fi: {
+    tagline: "Selkeämmät järjestelmät.\nVähemmän väärää työtä.",
+    goTo: "Siirry",
+    process: "Prosessi",
+    contact: "Yhteys",
+    contactHeading: "Yhteys",
+    rights: "Kaikki oikeudet pidätetään.",
+    privacy: "Tietosuoja",
+    terms: "Ehdot",
+  },
+} as const;
+
+export default function Footer({ locale }: { locale: Locale }) {
+  const copy = FOOTER_COPY[locale];
+
   return (
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
@@ -9,32 +41,27 @@ export default function Footer() {
           <div className={styles.footerBrand}>
             <span className={styles.footerLogo}>Weboryn</span>
             <p className={styles.footerTagline}>
-              We design and build systems that actually work — from internal tools to full web platforms.
+              {copy.tagline.split("\n")[0]}
+              <br />
+              {copy.tagline.split("\n")[1]}
             </p>
           </div>
 
-          <div className={styles.footerMenu}>
-            {/* Navigation */}
+          <div className={styles.footerAside}>
             <div className={styles.footerSection}>
-              <h3 className={styles.footerHeading}>Navigation</h3>
+              <h3 className={styles.footerHeading}>{copy.goTo}</h3>
 
               <nav
                 className={styles.footerNav}
                 aria-label="Footer navigation"
               >
-                <Link href="/">Home</Link>
-                <Link href="/about-us">About</Link>
-                <Link href="/service">Services</Link>
-                <Link href="/process">Process</Link>
-                <Link href="/cases">Cases</Link>
-                <Link href="/book">Book call</Link>
-                <Link href="/contact">Contact</Link>
+                <Link href={localizeHref("/process", locale)}>{copy.process}</Link>
+                <Link href={localizeHref("/contact", locale)}>{copy.contact}</Link>
               </nav>
             </div>
 
-            {/* Contact */}
-            <div className={styles.footerContacts}>
-              <h3 className={styles.footerHeading}>Contact</h3>
+            <div className={styles.footerSection}>
+              <h3 className={styles.footerHeading}>{copy.contactHeading}</h3>
 
               <div className={styles.footerContactItem}>
                 <span className={styles.footerLabel}>Email</span>
@@ -43,28 +70,32 @@ export default function Footer() {
                 </a>
               </div>
 
-              <div className={styles.footerContactItem}>
-                <span className={styles.footerLabel}>Location</span>
-                <span>Helsinki, Finland</span>
+              <div className={styles.footerLocaleSwitch}>
+                <Link
+                  href={switchLocaleInPathname("/", "fi")}
+                  className={styles.footerLocaleLink}
+                  data-active={locale === "fi"}
+                >
+                  FI
+                </Link>
+                <Link
+                  href={switchLocaleInPathname("/", "en")}
+                  className={styles.footerLocaleLink}
+                  data-active={locale === "en"}
+                >
+                  EN
+                </Link>
               </div>
-
-              {/* Optional future: phone / social */}
-              {/* 
-              <div className={styles.footerContactItem}>
-                <span className={styles.footerLabel}>Phone</span>
-                <a href="tel:+358401234567">+358 40 123 4567</a>
-              </div>
-              */}
             </div>
           </div>
         </div>
 
         <div className={styles.footerBottom}>
-          <span>© {new Date().getFullYear()} Weboryn. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Weboryn. {copy.rights}</span>
 
           <div className={styles.footerMeta}>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
+            <Link href={localizeHref("/privacy", locale)}>{copy.privacy}</Link>
+            <Link href={localizeHref("/terms", locale)}>{copy.terms}</Link>
           </div>
         </div>
       </div>
