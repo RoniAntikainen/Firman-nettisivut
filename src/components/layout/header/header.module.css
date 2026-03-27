@@ -81,7 +81,8 @@
     opacity 180ms ease,
     box-shadow 180ms ease,
     font-size 180ms ease,
-    line-height 180ms ease;
+    line-height 180ms ease,
+    min-height 180ms ease;
 }
 
 .headerScrolled .brandLink {
@@ -217,7 +218,11 @@
     opacity 180ms ease,
     box-shadow 180ms ease,
     font-size 180ms ease,
-    line-height 180ms ease;
+    line-height 180ms ease,
+    min-width 180ms ease,
+    min-height 180ms ease,
+    padding 180ms ease,
+    border-radius 180ms ease;
 }
 
 .headerScrolled .navigationLink {
@@ -753,7 +758,8 @@
     gap: var(--space-4);
     transition:
       min-height 180ms ease,
-      gap 180ms ease;
+      gap 180ms ease,
+      width 180ms ease;
   }
 
   .headerScrolled .inner {
@@ -773,6 +779,7 @@
 
   .brandLink {
     min-height: 3rem;
+    transition-duration: 220ms;
   }
 
   .headerScrolled .brandLink {
@@ -791,6 +798,7 @@
     color: var(--color-fg-default);
     font-size: var(--text-label-md-size);
     line-height: var(--text-label-md-line-height);
+    transition-duration: 220ms;
   }
 
   .headerScrolled .menuButton {
