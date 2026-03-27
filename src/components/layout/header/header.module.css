@@ -751,9 +751,13 @@
     min-height: var(--header-height-md);
     padding-block: 0;
     gap: var(--space-4);
+    transition:
+      min-height 180ms ease,
+      gap 180ms ease;
   }
 
   .headerScrolled .inner {
+    min-height: 3.6rem;
     padding-block: 0;
   }
 
@@ -771,6 +775,12 @@
     min-height: 3rem;
   }
 
+  .headerScrolled .brandLink {
+    min-height: 2.5rem;
+    font-size: var(--text-label-sm-size);
+    line-height: var(--text-label-sm-line-height);
+  }
+
   .menuButton {
     min-width: 3rem;
     min-height: 3rem;
@@ -781,6 +791,11 @@
     color: var(--color-fg-default);
     font-size: var(--text-label-md-size);
     line-height: var(--text-label-md-line-height);
+  }
+
+  .headerScrolled .menuButton {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
   }
 
   .menuButton::after {
